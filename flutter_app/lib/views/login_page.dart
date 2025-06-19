@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const SizedBox(height: 40),
-                        LoginHeader(textTheme: textTheme),
+                        LoginHeader(textTheme: textTheme, key: null,),
                         const SizedBox(height: 40),
                         LoginForm(
                           emailController: _emailController,

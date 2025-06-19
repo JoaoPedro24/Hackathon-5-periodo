@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 class MyAppf extends StatelessWidget {
   const MyAppf({super.key});
-
+// MyAppf é o nome da classe que representa o aplicativo Flutter, que utiliza o pacote MaterialApp para definir o tema, como faziamos no Main.dart
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -19,7 +19,8 @@ class MyAppf extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: themeApp(),
         initialRoute: '/login',
-        routes: {'/login': (_) => LoginPage(), '/home': (_) => HomePage()},
+        routes: {'/login': (_) => LoginPage(), 
+        '/home': (_) => HomePage()},
       ),
     );
   }
