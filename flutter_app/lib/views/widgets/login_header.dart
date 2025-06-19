@@ -29,15 +29,13 @@ class LoginHeader extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           'Sistema de Gabarito',
-          style: textTheme.headlineMedium,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           'Faça login para continuar',
-          style: textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 179),
-          ),
+          style: textTheme.bodyLarge,
           textAlign: TextAlign.center,
         ),
       ],

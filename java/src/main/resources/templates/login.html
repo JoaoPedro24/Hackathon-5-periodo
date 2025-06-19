@@ -4,16 +4,16 @@
 <body>
 <div class="container d-flex justify-content-center align-items-center">
     <br/>
-    <form>
-        <div class="mb-3">
-            <label class="form-label" for="username">Login</label>
-            <input class="form-control" id="username" name="username" type="text">
-
-            <label class="form-label" for="password">Password</label>
-            <input class="form-control" id="password" name="password" type="password">
+    <form th:action="@{/login}" method="post">
+        <div>
+            <label>Login:</label>
+            <input type="text" name="username"/>
         </div>
-
-        <button class="btn btn-dark" formmethod="post" type="submit">Entrar</button>
+        <div>
+            <label>Senha:</label>
+            <input type="password" name="password"/>
+        </div>
+        <button type="submit">Entrar</button>
     </form>
 </div>
 </body>

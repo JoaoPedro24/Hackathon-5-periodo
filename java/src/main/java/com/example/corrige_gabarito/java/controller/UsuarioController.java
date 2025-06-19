@@ -1,50 +1,61 @@
 package com.example.corrige_gabarito.java.controller;
 
+
 import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.UsuarioService;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping("/usuario")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
-    public String iniciar() {
+    public String iniciar(Model model) {
+        model.addAttribute("usuario", new Usuario());
         return "usuario/formulario";
     }
 
-    @GetMapping("listar")
-    public String listar(Usuario usuario, Model model) {
-        model.addAttribute("usuarios", usuarioService.listararTodos());
+    @GetMapping("/listar")
+    public String listar(Model model) {
+        model.addAttribute("usuarios", usuarioService.listarTodos());
         return "usuario/lista";
     }
 
     @PostMapping
     public String salvar(Usuario usuario, Model model) {
         try {
+
+            if (usuario.getId() == null || !usuario.getPassword().startsWith("$2a$")) {
+                usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            }
+
             usuarioService.salvar(usuario);
-            return "redirect:usuario/listar";
+            return "redirect:/usuario/listar";
+
         } catch (Exception e) {
-            model.addAttribute("message", "Não foi possível savar");
-            return listar(usuario, model);
+            model.addAttribute("message", "Não foi possível salvar o usuário: " + e.getMessage());
+            model.addAttribute("usuarios", usuarioService.listarTodos());
+            return "usuario/lista";
         }
     }
 
-    @GetMapping("editar/{id}")
+    @GetMapping("/editar/{id}")
     public String atualizar(@PathVariable Long id, Model model) {
         model.addAttribute("usuario", usuarioService.buscarPorId(id));
         return "usuario/formulario";
     }
 
-    @GetMapping("remover/{id}")
-    public String deletar(@PathVariable Long id, Model model) {
+    @GetMapping("/remover/{id}")
+    public String deletar(@PathVariable Long id) {
         usuarioService.deletarPorId(id);
-        return "redirect:usuario/listar";
+        return "redirect:/usuario/listar";
     }
 }

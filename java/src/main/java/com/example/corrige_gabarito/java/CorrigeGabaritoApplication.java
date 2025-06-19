@@ -16,14 +16,20 @@ public class CorrigeGabaritoApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(UsuarioRepository usuarioRepository){
+	public CommandLineRunner loadAdminUser(UsuarioRepository usuarioRepository) {
 		return args -> {
-			usuarioRepository.save(new Usuario(
-					null,
-					"Administrador",
-					new BCryptPasswordEncoder().encode("admin"),
-					"admin",
-					"ADMIN"));
+			if (usuarioRepository.findByLogin("admin").isEmpty()) {
+				usuarioRepository.save(new Usuario(
+						null,
+						"Administrador",
+						new BCryptPasswordEncoder().encode("admin"),
+						"admin",
+						"ADMIN"
+				));
+				System.out.println("Usuário admin criado com sucesso!");
+			} else {
+				System.out.println("Usuário admin já existe. Não será recriado.");
+			}
 		};
 	}
 }
