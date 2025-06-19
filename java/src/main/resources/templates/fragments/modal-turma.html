@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="modalTurma">
+    <div id="modalTurma" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+                <h3>Nova Turma</h3>
+                <form th:action="@{/turmas/salvar}" method="post">
+                    <label>Nome:</label>
+                    <input type="text" name="nome" class="form-control mb-2" required />
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalTurma')">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**",
                                 "/css/**", "/error/**").permitAll()
-                        .requestMatchers("/","/login").permitAll()
+                        .requestMatchers("/**","/login").permitAll()
                         .requestMatchers("/banco/**", "/usuarios/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "PROFESSOR", "ALUNO", "API")
                         .anyRequest().authenticated()
@@ -44,12 +44,6 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails admin =
-                User.withDefaultPasswordEncoder()
-                        .username("admin")
-                        .password("admin")
-                        .roles("ADMIN")
-                        .build();
 
         UserDetails professor =
                 User.withDefaultPasswordEncoder()
@@ -66,7 +60,7 @@ public class SecurityConfig {
                         .build();
 
 
-        return new InMemoryUserDetailsManager(admin, professor, aluno);
+        return new InMemoryUserDetailsManager(professor, aluno);
     }
 
     @Bean

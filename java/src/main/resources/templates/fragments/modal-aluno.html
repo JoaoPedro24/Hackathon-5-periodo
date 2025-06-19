@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="modalAluno">
+    <div id="modalAluno" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content p-3">
+                <h3>Novo Aluno</h3>
+                <form th:action="@{/alunos/salvar}" method="post">
+                    <label>Nome:</label>
+                    <input type="text" name="nome" class="form-control mb-2" required />
+                    <button type="submit" class="btn btn-success">Salvar</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalAluno')">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
