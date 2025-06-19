@@ -37,7 +37,7 @@ ThemeData themeApp() {
   final textoTema = TextTheme(
     titleLarge: TextStyle(
       color: corPrimariaDark,
-      fontSize: 20,
+      fontSize: 30,
       fontWeight: FontWeight.bold,
     ),
     headlineLarge: TextStyle(fontSize: 25, color: corTextLight),

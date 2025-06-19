@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/views/widgets/barra_superior.dart';
+import 'package:flutter_app/views/widgets/campo_busca.dart';
+import 'package:flutter_app/views/widgets/filtro_disciplina.dart';
+import 'package:flutter_app/views/widgets/lista_alunos.dart';
+import 'package:flutter_app/views/widgets/lista_provas.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -152,22 +157,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }).toList();
   }
 
-  int _getTotalAlunos() {
-    return _provas.fold(
-      0,
-      (total, prova) => total + (prova['alunos'] as List).length,
-    );
-  }
-
-  int _getAlunosCorrigidos() {
-    int total = 0;
-    for (var prova in _provas) {
-      final alunos = prova['alunos'] as List;
-      total += alunos.where((aluno) => aluno['nota'] != null).length;
-    }
-    return total;
-  }
-
   List<Map<String, dynamic>> _getAlunosFiltrados() {
     if (_provaSelecionada == null) return [];
     final alunos = _provaSelecionada!['alunos'] as List<Map<String, dynamic>>;
@@ -199,57 +188,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final provasFiltradas = _getProvasFiltradas();
     return CustomScrollView(
       slivers: [
-        SliverAppBar(
-          expandedHeight: 200,
-          floating: false,
-          pinned: true,
-          backgroundColor: const Color(0xFF1E293B),
-          flexibleSpace: FlexibleSpaceBar(
-            title: const Text(
-              'Correção de Provas',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
+        const BarraSuperior(),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: 'Buscar por prova...',
-                    prefixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                CampoBusca(
                   onChanged: (value) {
                     setState(() => _termoBusca = value);
                   },
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  value: _filtroDisciplina,
-                  decoration: InputDecoration(
-                    labelText: 'Filtrar por disciplina',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    prefixIcon: const Icon(Icons.book),
-                  ),
-                  isExpanded: true,
-                  items: [
-                    const DropdownMenuItem(value: null, child: Text('Todas')),
-                    ..._getDisciplinasDisponiveis()
-                        .map(
-                          (disciplina) => DropdownMenuItem(
-                            value: disciplina,
-                            child: Text(disciplina),
-                          ),
-                        )
-                        .toList(),
-                  ],
+                FiltroDisciplina(
+                  valorSelecionado: _filtroDisciplina,
+                  opcoes: _getDisciplinasDisponiveis(),
                   onChanged: (value) {
                     setState(() => _filtroDisciplina = value);
                   },
@@ -258,18 +211,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ),
         ),
-        SliverPadding(
-          padding: const EdgeInsets.all(16),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final prova = provasFiltradas[index];
-              return ListTile(
-                title: Text(prova['titulo']),
-                subtitle: Text(prova['disciplina']),
-                onTap: () => setState(() => _provaSelecionada = prova),
-              );
-            }, childCount: provasFiltradas.length),
-          ),
+        ListaProvas(
+          provas: provasFiltradas,
+          onSelecionar: (prova) {
+            setState(() => _provaSelecionada = prova);
+          },
         ),
       ],
     );
@@ -277,17 +223,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildCorrecaoProva() {
     final alunos = _getAlunosFiltrados();
-    return ListView.builder(
-      itemCount: alunos.length,
-      itemBuilder: (context, index) {
-        final aluno = alunos[index];
-        return ListTile(
-          title: Text(aluno['nome']),
-          subtitle: Text(
-            'Matrícula: ${aluno['matricula']} - Tempo: ${aluno['tempo']}',
-          ),
-        );
-      },
-    );
+    return ListaAlunos(alunos: alunos);
   }
 }
