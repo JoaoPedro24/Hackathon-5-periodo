@@ -34,13 +34,17 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(
-                new SimpleGrantedAuthority(
-                        this.role.equals("ADMIN")
-                                ? "ROLE_ADMIN"
-                                : "ROLE_USER")
-        );
+        if ("ADMIN".equalsIgnoreCase(this.role)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        } else if ("PROFESSOR".equalsIgnoreCase(this.role)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_PROFESSOR"), new SimpleGrantedAuthority("ROLE_USER"));
+        } else if ("ALUNO".equalsIgnoreCase(this.role)) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ALUNO"), new SimpleGrantedAuthority("ROLE_USER"));
+        } else {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
+
 
     @Override
     public String getUsername() {

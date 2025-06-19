@@ -1,18 +1,13 @@
 package com.example.corrige_gabarito.java.security;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -27,51 +22,30 @@ public class SecurityConfig {
                 .headers(header -> header.frameOptions(config -> config.sameOrigin()))
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/images/**",
-                                "/css/**", "/error/**").permitAll()
-                        .requestMatchers("/","/login").permitAll()
-                        .requestMatchers("/banco/**", "/usuarios/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**").hasAnyRole("ADMIN", "PROFESSOR", "ALUNO", "API")
+                        .requestMatchers("/images/**", "/css/**", "/error/**").permitAll()
+                        .requestMatchers("/", "/login").permitAll()
+                        .requestMatchers("/banco/**", "/usuario/**").hasRole("ADMIN")
+                        .requestMatchers("/provas/**", "/gabaritos/**").hasRole("PROFESSOR")
+                        .requestMatchers("/notas/**").hasAnyRole("ALUNO", "ADMIN", "PROFESSOR")
+                        .requestMatchers("/api/**").hasAnyRole("ADMIN", "PROFESSOR", "ALUNO")
                         .anyRequest().authenticated()
                 ).formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/",true))
-                .logout(logout -> logout
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
+                ).logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login"))
+                        .logoutSuccessUrl("/login")
+                        .permitAll()
+                )
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/403")
+                )
                 .build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails admin =
-                User.withDefaultPasswordEncoder()
-                        .username("admin")
-                        .password("admin")
-                        .roles("ADMIN")
-                        .build();
-
-        UserDetails professor =
-                User.withDefaultPasswordEncoder()
-                        .username("professor")
-                        .password(new BCryptPasswordEncoder().encode("professor"))
-                        .roles("professor")
-                        .build();
-
-        UserDetails aluno =
-                User.withDefaultPasswordEncoder()
-                        .username("aluno")
-                        .password(new BCryptPasswordEncoder().encode("aluno"))
-                        .roles("aluno")
-                        .build();
-
-
-        return new InMemoryUserDetailsManager(admin, professor, aluno);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
