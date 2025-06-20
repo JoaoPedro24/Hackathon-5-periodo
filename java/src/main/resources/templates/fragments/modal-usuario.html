@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="modalUsuario">
+    <div class="modal fade" id="modalUsuario" tabindex="-1" aria-labelledby="modalUsuarioLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalUsuarioLabel" th:text="${usuario?.id != null} ? 'Editar Usuário' : 'Novo Usuário'">Novo Usuário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="${usuario?.id != null} ? @{'/usuario/editar/' + ${usuario.id}} : @{/usuario}" method="post">
+                        <input type="hidden" name="id" th:value="${usuario?.id}" />
+                        
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="nome" name="nome" 
+                                   th:value="${usuario?.nome}" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Login</label>
+                            <input type="text" class="form-control" id="login" name="login" 
+                                   th:value="${usuario?.login}" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha</label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   th:required="${usuario?.id == null}" />
+                            <small class="text-muted" th:if="${usuario?.id != null}">Deixe em branco para manter a senha atual</small>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Perfil (Role)</label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="">Selecione um perfil</option>
+                                <option th:each="role : ${T(com.example.corrige_gabarito.java.model.Role).values()}"
+                                        th:value="${role.name()}"
+                                        th:selected="${usuario?.role == role.name()}"
+                                        th:text="${role.descricao}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span th:text="${usuario?.id != null} ? 'Atualizar' : 'Salvar'"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

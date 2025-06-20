@@ -1,11 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Acesso Negado</title>
-</head>
-<body>
-<h1>403 - Acesso Negado</h1>
-<p>Você não tem permissão para acessar esta página.</p>
-<a th:href="@{/}">Voltar para a página inicial</a>
+<head th:replace="fragments/layout :: head(paginaTitulo='Acesso Negado')"></head>
+
+<body class="d-flex flex-column min-vh-100">
+
+<header th:replace="fragments/layout :: cabecalho"></header>
+<section class="container-md">
+    <div class="card shadow">
+        <div class="card-header bg-danger text-white">
+            <h1 class="display-4"><i class="bi bi-exclamation-triangle-fill"></i> 403 - Acesso Negado</h1>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Atenção!</h4>
+                <p>Você não tem permissão para acessar esta página ou executar esta ação.</p>
+                <hr>
+                <p class="mb-0">Se você acredita que isso é um engano, entre em contato com o administrador do
+                    sistema.</p>
+            </div>
+            <a th:href="@{/}" class="btn btn-primary mt-3">
+                <i class="bi bi-house-door"></i> Voltar para a página inicial
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="fragments/layout :: rodape"></footer>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .card-header {
+        padding: 1.5rem;
+    }
+    .display-4 {
+        font-size: 2.5rem;
+        font-weight: 300;
+    }
+</style>
 </body>
 </html>

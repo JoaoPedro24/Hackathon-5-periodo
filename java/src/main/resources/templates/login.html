@@ -1,20 +1,56 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/layout :: head(paginaTitulo='Login')"></head>
-<body>
-<div class="container d-flex justify-content-center align-items-center">
-    <br/>
-    <form th:action="@{/login}" method="post">
-        <div>
-            <label>Login:</label>
-            <input type="text" name="username"/>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head(paginaTitulo='Login')">
+</head>
+<body class="bg-light">
+    <div class="container-fluid vh-100 d-flex justify-content-center align-items-center" 
+         style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                 url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+                 background-size: cover; background-position: center; background-attachment: fixed;">
+        
+        <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px; background: rgba(255, 255, 255, 0.95);">
+            <div class="text-center mb-2">
+                <h2 class="h3 mb-3 fw-normal">Acesso ao AvaliaFast</h2>
+            </div>
+            
+            <form th:action="@{/login}" method="post" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Login</label>
+                    <input type="text" class="form-control form-control-lg" id="username" name="username" required>
+                    <div class="invalid-feedback">
+                        Por favor, insira seu login.
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" class="form-control form-control-lg" id="password" name="password" required>
+                    <div class="invalid-feedback">
+                        Por favor, insira sua senha.
+                    </div>
+                </div>
+                <button type="submit" class="w-100 btn btn-primary btn-lg mb-3">Entrar</button>
+                
+                <div class="text-center mt-3">
+                    <a href="#" class="text-decoration-none">Esqueceu sua senha?</a>
+                </div>
+            </form>
         </div>
-        <div>
-            <label>Senha:</label>
-            <input type="password" name="password"/>
-        </div>
-        <button type="submit">Entrar</button>
-    </form>
-</div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
 </body>
 </html>

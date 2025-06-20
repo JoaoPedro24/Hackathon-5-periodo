@@ -1,6 +1,5 @@
 package com.example.corrige_gabarito.java.controller;
 
-
 import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.UsuarioService;
 import lombok.AllArgsConstructor;
@@ -26,14 +25,29 @@ public class UsuarioController {
     @GetMapping("/listar")
     public String listar(Model model) {
         model.addAttribute("usuarios", usuarioService.listarTodos());
+        model.addAttribute("usuario", new Usuario());
         return "usuario/lista";
     }
 
     @PostMapping
-    public String salvar(Usuario usuario, Model model) {
+    public String salvar(@ModelAttribute Usuario usuario, Model model) {
+        return salvarOuAtualizar(usuario, model);
+    }
+    
+    @PostMapping("/editar/{id}")
+    public String atualizarPost(@PathVariable Long id, @ModelAttribute Usuario usuario, Model model) {
+        usuario.setId(id);
+        return salvarOuAtualizar(usuario, model);
+    }
+    
+    private String salvarOuAtualizar(Usuario usuario, Model model) {
         try {
-
-            if (usuario.getId() == null || !usuario.getPassword().startsWith("$2a$")) {
+            // Se for uma edição e a senha não foi alterada, mantém a senha atual
+            if (usuario.getId() != null && (usuario.getPassword() == null || usuario.getPassword().isEmpty())) {
+                Usuario usuarioExistente = usuarioService.buscarPorId(usuario.getId());
+                usuario.setPassword(usuarioExistente.getPassword());
+            } else if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
+                // Se for um novo usuário ou a senha foi alterada, criptografa a nova senha
                 usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             }
 
@@ -49,8 +63,15 @@ public class UsuarioController {
 
     @GetMapping("/editar/{id}")
     public String atualizar(@PathVariable Long id, Model model) {
-        model.addAttribute("usuario", usuarioService.buscarPorId(id));
-        return "usuario/formulario";
+        Usuario usuario = usuarioService.buscarPorId(id);
+        if (usuario != null) {
+            model.addAttribute("usuario", usuario);
+        } else {
+            model.addAttribute("usuario", new Usuario());
+            model.addAttribute("message", "Usuário não encontrado");
+        }
+        model.addAttribute("usuarios", usuarioService.listarTodos());
+        return "usuario/lista";
     }
 
     @GetMapping("/remover/{id}")
