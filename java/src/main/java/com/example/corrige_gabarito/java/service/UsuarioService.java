@@ -42,6 +42,10 @@ public class UsuarioService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o id: " + id));
     }
 
+    public List<Usuario> listarUsuariosPorRole(String role) {
+        return usuarioRepository.findByRoleIgnoreCase(role);
+    }
+
     @Transactional
     public void deletarPorId(Long id) {
         usuarioRepository.deleteById(id);
