@@ -1,7 +1,9 @@
 package com.example.corrige_gabarito.java.controller;
 
 import com.example.corrige_gabarito.java.model.Aluno;
+import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.AlunoService;
+import com.example.corrige_gabarito.java.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,8 @@ import java.util.List;
 public class AlunoController {
 
     private final AlunoService alunoService;
+    private final UsuarioService usuarioService;
+
 
     @GetMapping
     public String form(Aluno aluno) {
@@ -24,6 +28,8 @@ public class AlunoController {
     @GetMapping("/listar")
     public String listar(Model model) {
         List<Aluno> alunos = alunoService.listarTodos();
+        List<Usuario> usuarios = usuarioService.listarUsuariosPorRole("ALUNO");
+        model.addAttribute("usuarios", usuarios);
         model.addAttribute("alunos", alunos);
         return "aluno/lista";
     }
