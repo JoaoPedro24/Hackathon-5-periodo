@@ -1,44 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/viewmodel/login_viewmodel.dart';
 import 'package:flutter_app/views/widgets/login_form.dart';
 import 'package:flutter_app/views/widgets/login_header.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _loginController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _toggleObscure() {
-    setState(() {
-      _obscurePassword = !_obscurePassword;
-    });
-  }
-
-  void _fazerLogin() {
-    if (_formKey.currentState!.validate()) {
-      final email = _emailController.text.trim();
-      final senha = _passwordController.text;
-      print('Email: $email | Senha: $senha');
-      Navigator.pushReplacementNamed(context, '/home');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<LoginViewModel>(context);
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -55,7 +30,10 @@ class _LoginPageState extends State<LoginPage> {
           child: LayoutBuilder(
             builder: (context, constraints) {
               return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 32,
+                ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: IntrinsicHeight(
@@ -68,17 +46,58 @@ class _LoginPageState extends State<LoginPage> {
                           LoginHeader(textTheme: textTheme),
                           const SizedBox(height: 40),
                           LoginForm(
-                            emailController: _emailController,
+                            loginController: _loginController,
                             passwordController: _passwordController,
-                            obscurePassword: _obscurePassword,
-                            onToggleObscure: _toggleObscure,
+                            obscurePassword: viewModel.obscurePassword,
+                            onToggleObscure: viewModel.toggleObscurePassword,
                           ),
                           const SizedBox(height: 32),
+                          if (viewModel.errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Text(
+                                viewModel.errorMessage!,
+                                style: const TextStyle(color: Colors.red),
+                              ),
+                            ),
                           SizedBox(
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton.icon(
-                              onPressed: _fazerLogin,
+                              onPressed:
+                                  viewModel.isLoading
+                                      ? null
+                                      : () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          final user = await viewModel.fazerLogin(
+                                            _loginController.text
+                                                .trim(), // ou usernameController, se ainda não renomeou
+                                            _passwordController.text,
+                                          );
+
+                                          if (user != null) {
+                                            switch (user.perfil) {
+                                              case 'ADMIN':
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  '/adminHome',
+                                                );
+                                                break;
+                                              case 'PROFESSOR':
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  '/professorHome',
+                                                );
+                                                break;
+                                              default:
+                                                Navigator.pushReplacementNamed(
+                                                  context,
+                                                  '/alunoHome',
+                                                );
+                                            }
+                                          }
+                                        }
+                                      },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(context).primaryColor,
                                 shape: RoundedRectangleBorder(
@@ -87,10 +106,18 @@ class _LoginPageState extends State<LoginPage> {
                                 elevation: 4,
                                 shadowColor: Colors.black26,
                               ),
-                              icon: const Icon(Icons.login),
+                              icon:
+                                  viewModel.isLoading
+                                      ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                      : const Icon(Icons.login),
                               label: const Text(
                                 'Entrar',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),

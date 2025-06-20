@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class LoginForm extends StatelessWidget {
-  final TextEditingController emailController;
+  final TextEditingController loginController;
   final TextEditingController passwordController;
   final bool obscurePassword;
   final VoidCallback onToggleObscure;
 
   const LoginForm({
     super.key,
-    required this.emailController,
+    required this.loginController,
     required this.passwordController,
     required this.obscurePassword,
     required this.onToggleObscure,
@@ -19,19 +19,15 @@ class LoginForm extends StatelessWidget {
     return Column(
       children: [
         TextFormField(
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
+          controller: loginController, // antes era usernameController
           decoration: const InputDecoration(
-            labelText: 'Email',
-            hintText: 'Digite seu email',
-            prefixIcon: Icon(Icons.email),
+            labelText: 'Login',
+            hintText: 'Digite seu login',
+            prefixIcon: Icon(Icons.person),
           ),
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Por favor, digite seu email';
-            }
-            if (!value.contains('@')) {
-              return 'Email inválido';
+              return 'Por favor, digite seu login';
             }
             return null;
           },
@@ -54,9 +50,6 @@ class LoginForm extends StatelessWidget {
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Digite sua senha';
-            }
-            if (value.length < 6) {
-              return 'A senha deve ter no mínimo 6 caracteres';
             }
             return null;
           },

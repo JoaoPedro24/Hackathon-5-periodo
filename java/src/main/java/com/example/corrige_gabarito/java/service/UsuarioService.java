@@ -4,6 +4,7 @@ import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UsuarioService implements UserDetailsService {
 
+@Autowired
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
