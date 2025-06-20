@@ -2,15 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="modalAluno">
-    <div id="modalAluno" class="modal fade">
+    <div id="modalAluno" class="modal fade" tabindex="-1" aria-labelledby="modalAlunoLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content p-3">
-                <h3>Novo Aluno</h3>
-                <form th:action="@{/alunos/salvar}" method="post">
+                <h3 id="modalAlunoLabel" th:text="${aluno != null and aluno.id != null} ? 'Editar Aluno' : 'Novo Aluno'">Novo Aluno</h3>
+                <form th:action="@{/alunos/salvar}" method="post" th:object="${aluno}">
+                    <input type="hidden" name="id" th:value="*{id}" />
                     <label>Nome:</label>
-                    <input type="text" name="nome" class="form-control mb-2" required />
+                    <input type="text" name="nome" class="form-control mb-2" required th:value="*{nome}" />
                     <button type="submit" class="btn btn-success">Salvar</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalAluno')">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                 </form>
             </div>
         </div>

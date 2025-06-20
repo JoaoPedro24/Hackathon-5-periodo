@@ -4,8 +4,6 @@ import com.example.corrige_gabarito.java.model.Disciplina;
 import com.example.corrige_gabarito.java.repository.DisciplinaRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 public class DisciplinaService {
 
-    @Autowired
     private final DisciplinaRepository disciplinaRepository;
 
-    public List<Disciplina> listarTodas() {
+    public List<Disciplina> listarTodos() {
         return disciplinaRepository.findAll();
     }
 
