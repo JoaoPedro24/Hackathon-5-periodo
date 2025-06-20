@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "alunos")
+@Table(name = "professores")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Aluno {
+public class Professor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +22,5 @@ public class Aluno {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    private String matricula;
+    private String especialidade;
 }

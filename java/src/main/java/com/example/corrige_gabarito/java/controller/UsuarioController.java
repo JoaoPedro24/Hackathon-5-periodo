@@ -42,12 +42,10 @@ public class UsuarioController {
     
     private String salvarOuAtualizar(Usuario usuario, Model model) {
         try {
-            // Se for uma edição e a senha não foi alterada, mantém a senha atual
             if (usuario.getId() != null && (usuario.getPassword() == null || usuario.getPassword().isEmpty())) {
                 Usuario usuarioExistente = usuarioService.buscarPorId(usuario.getId());
                 usuario.setPassword(usuarioExistente.getPassword());
             } else if (usuario.getPassword() != null && !usuario.getPassword().isEmpty()) {
-                // Se for um novo usuário ou a senha foi alterada, criptografa a nova senha
                 usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             }
 

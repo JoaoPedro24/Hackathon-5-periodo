@@ -1,0 +1,38 @@
+package com.example.corrige_gabarito.java.service;
+
+import com.example.corrige_gabarito.java.model.Disciplina;
+import com.example.corrige_gabarito.java.repository.DisciplinaRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class DisciplinaService {
+
+    @Autowired
+    private final DisciplinaRepository disciplinaRepository;
+
+    public List<Disciplina> listarTodas() {
+        return disciplinaRepository.findAll();
+    }
+
+    public Disciplina buscarPorId(Long id) {
+        return disciplinaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada com id: " + id));
+    }
+
+    @Transactional
+    public Disciplina salvar(Disciplina disciplina) {
+        return disciplinaRepository.save(disciplina);
+    }
+
+    @Transactional
+    public void deletarPorId(Long id) {
+        disciplinaRepository.deleteById(id);
+    }
+}
