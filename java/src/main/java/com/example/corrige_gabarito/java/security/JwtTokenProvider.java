@@ -11,8 +11,8 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final String jwtSecret = "segredoSuperSecreto123"; // troque isso em produção!
-    private final long jwtExpirationMs = 86400000; // 24 horas
+    private final String jwtSecret = "segredoSuperSecreto123";
+    private final long jwtExpirationMs = 86400000;
 
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();

@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "index";  // O Spring vai buscar o arquivo /src/main/resources/templates/index.html
+        return "index";
     }
 }
