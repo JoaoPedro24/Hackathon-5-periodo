@@ -3,6 +3,7 @@ package com.example.corrige_gabarito.java.controller;
 import com.example.corrige_gabarito.java.model.Aluno;
 import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.AlunoService;
+import com.example.corrige_gabarito.java.service.DisciplinaService;
 import com.example.corrige_gabarito.java.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,8 @@ import java.util.List;
 public class AlunoController {
 
     private final AlunoService alunoService;
+    private final UsuarioService usuarioService;
+
     private final PasswordEncoder passwordEncoder;
 
 
@@ -35,6 +38,10 @@ public class AlunoController {
 
     private String salvarOuAtualizar(Aluno aluno, Model model) {
         try {
+            if (aluno.getUsuario() != null && aluno.getUsuario().getId() != null) {
+                Usuario usuario = usuarioService.buscarPorId(aluno.getUsuario().getId());
+                aluno.setUsuario(usuario);
+            }
 
             alunoService.salvar(aluno);
             return "redirect:/aluno/listar";
