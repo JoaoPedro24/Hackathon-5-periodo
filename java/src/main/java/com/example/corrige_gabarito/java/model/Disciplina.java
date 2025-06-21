@@ -22,13 +22,9 @@ public class Disciplina {
 
     private String nome;
 
-    @ManyToMany
-    @JoinTable(
-            name = "disciplina_professores",
-            joinColumns = @JoinColumn(name = "disciplina_id"),
-            inverseJoinColumns = @JoinColumn(name = "professor_id")
-    )
-    private List<Professor> professores;
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Professor professor;
 
     @ManyToMany
     @JoinTable(
