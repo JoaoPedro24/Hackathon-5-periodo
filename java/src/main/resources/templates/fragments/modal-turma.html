@@ -1,20 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
+
 <div th:fragment="modalTurma">
-    <div id="modalTurma" class="modal fade">
+    <script>
+        function addAlunoField() {
+        const container = document.getElementById('alunosContainer');
+        const selectTemplate = document.getElementById('selectAlunoTemplate');
+
+        const selectedIds = Array.from(container.querySelectorAll('select[name="alunosIds"]'))
+            .map(select => select.value)
+            .filter(id => id); // Ignora selects ainda não preenchidos
+
+        const select = document.createElement('select');
+        select.name = 'alunosIds';
+        select.className = 'form-select form-select-sm';
+        select.required = true;
+
+        Array.from(selectTemplate.options).forEach(option => {
+            if (option.value === '' || !selectedIds.includes(option.value)) {
+                const newOption = document.createElement('option');
+                newOption.value = option.value;
+                newOption.textContent = option.textContent;
+                select.appendChild(newOption);
+            }
+        });
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-danger btn-sm';
+        btn.textContent = 'Remover';
+        btn.onclick = function () {
+            container.removeChild(div);
+        };
+
+        const div = document.createElement('div');
+        div.className = 'input-group mb-2 d-flex align-items-center';
+        div.appendChild(select);
+        div.appendChild(btn);
+
+        container.appendChild(div);
+    }
+    </script>
+
+    <div class="modal fade" id="modalTurma" tabindex="-1" aria-labelledby="modalTurmaLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content p-3">
-                <h3>Nova Turma</h3>
-                <form th:action="@{/turmas/salvar}" method="post">
-                    <label>Nome:</label>
-                    <input type="text" name="nome" class="form-control mb-2" required />
-                    <button type="submit" class="btn btn-success">Salvar</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalTurma')">Cancelar</button>
-                </form>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTurmaLabel"
+                        th:text="${turma?.id != null} ? 'Editar Turma' : 'Nova Turma'"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/turma}" method="post">
+                        <input type="hidden" name="id" th:value="${turma?.id}" />
+
+                        <!-- Nome da Turma -->
+                        <label>Nome da Turma:</label>
+                        <input type="text" name="nome" class="form-control mb-3" th:value="${turma?.nome}" required />
+
+                        <!-- Select modelo oculto com opções de alunos -->
+                        <select id="selectAlunoTemplate" style="display:none;">
+                            <option value="">Selecione um aluno</option>
+                            <option th:each="aluno : ${alunos}"
+                                    th:value="${aluno.id}"
+                                    th:text="${aluno.usuario?.nome + ' - ' + aluno.matricula}"></option>
+                        </select>
+
+                        <!-- Container onde os selects de alunos vão aparecer -->
+                        <label>Alunos:</label>
+                        <div id="alunosContainer">
+                            <!-- Se for edição, pode já carregar os alunos existentes -->
+                            <div th:each="aluno : ${turma.alunos}" class="input-group mb-2 d-flex align-items-center">
+                                <select name="alunosIds" class="form-select form-select-sm" required>
+                                    <option value="">Selecione um aluno</option>
+                                    <option th:each="a : ${alunos}"
+                                            th:value="${a.id}"
+                                            th:text="${a.usuario?.nome + ' - ' + a.matricula}"
+                                            th:selected="${a.id} == ${aluno.id}"></option>
+                                </select>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Remover</button>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-primary" onclick="addAlunoField()">Adicionar Aluno</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span th:text="${turma?.id != null} ? 'Atualizar' : 'Salvar'"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
 </body>
 </html>
