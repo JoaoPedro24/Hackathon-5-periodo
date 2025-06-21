@@ -1,4 +1,4 @@
-package com.example.corrige_gabarito.java.dto;
+package com.example.corrige_gabarito.java.api.dto;
 
 public class AuthResponse {
     private String token;
@@ -16,4 +16,5 @@ public class AuthResponse {
     public String getUsername() {
         return username;
     }
+
 }

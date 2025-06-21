@@ -1,13 +1,13 @@
 class Usuario {
   final String token;
-  final String perfil;
+  final String username;
 
-  Usuario({required this.token, required this.perfil});
+  Usuario({required this.token, required this.username});
 
   factory Usuario.fromJson(Map<String, dynamic> json) {
     return Usuario(
       token: json['token'],
-      perfil: json['perfil'],
+      username: json['username'],
     );
   }
 }

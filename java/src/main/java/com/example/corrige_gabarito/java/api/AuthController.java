@@ -1,9 +1,8 @@
-package com.example.corrige_gabarito.java.controller;
+package com.example.corrige_gabarito.java.api;
 
-import com.example.corrige_gabarito.java.dto.AuthResponse;
-import com.example.corrige_gabarito.java.dto.LoginDto;
+import com.example.corrige_gabarito.java.api.dto.AuthResponse;
+import com.example.corrige_gabarito.java.api.dto.LoginDto;
 import com.example.corrige_gabarito.java.model.Usuario;
-import com.example.corrige_gabarito.java.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +25,7 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDTO) {
         try {
@@ -38,9 +38,12 @@ public class AuthController {
             Usuario usuario = (Usuario) authentication.getPrincipal();
             String token = jwtTokenProvider.generateToken(authentication);
 
-            return ResponseEntity.ok(new AuthResponse(token, usuario.getUsername()));
+            return ResponseEntity.ok(new AuthResponse(token, usuario.getRole().toUpperCase())); // Ou .toLowerCase()
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login inválido");
+        } catch (Exception e) {
+            e.printStackTrace(); // ⛳ VEJA O LOG NO CONSOLE
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno");
         }
     }
 }

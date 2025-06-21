@@ -1,4 +1,4 @@
-package com.example.corrige_gabarito.java.dto;
+package com.example.corrige_gabarito.java.api.dto;
 
 public class LoginDto {private String login;
     private String senha;

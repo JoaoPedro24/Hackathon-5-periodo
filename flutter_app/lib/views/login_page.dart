@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/viewmodel/login_viewmodel.dart';
-import 'package:flutter_app/views/widgets/login_form.dart';
-import 'package:flutter_app/views/widgets/login_header.dart';
+import 'package:flutter_app/widgets/login_form.dart';
+import 'package:flutter_app/widgets/login_header.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -76,7 +76,12 @@ class LoginPage extends StatelessWidget {
                                           );
 
                                           if (user != null) {
-                                            switch (user.perfil) {
+                                            // AQUI É A MUDANÇA CRÍTICA: Converta o username para maiúsculas
+                                            final userRole =
+                                                user.username.toUpperCase();
+
+                                            switch (userRole) {
+                                              // Use userRole na comparação
                                               case 'ADMIN':
                                                 Navigator.pushReplacementNamed(
                                                   context,
@@ -89,11 +94,31 @@ class LoginPage extends StatelessWidget {
                                                   '/professorHome',
                                                 );
                                                 break;
-                                              default:
+                                              case 'ALUNO': // Assegure-se de que se houver 'ALUNO' no DB, ele está em maiúsculas também
                                                 Navigator.pushReplacementNamed(
                                                   context,
                                                   '/alunoHome',
                                                 );
+                                                break;
+                                              default:
+                                                // Caso o role não seja nenhum dos esperados, você pode
+                                                // - Redirecionar para uma página genérica de erro/default
+                                                // - Mostrar uma mensagem de erro ao usuário
+                                                print(
+                                                  'Role desconhecido recebido: ${user.username}',
+                                                );
+                                                // Exemplo: mostrar um AlertDialog ou navegar para uma tela de erro
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Erro: Tipo de usuário desconhecido. Contate o suporte.',
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                                break;
                                             }
                                           }
                                         }

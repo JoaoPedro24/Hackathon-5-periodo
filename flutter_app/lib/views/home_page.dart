@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/views/widgets/barra_superior.dart';
-import 'package:flutter_app/views/widgets/campo_busca.dart';
-import 'package:flutter_app/views/widgets/filtro_disciplina.dart';
-import 'package:flutter_app/views/widgets/lista_alunos.dart';
-import 'package:flutter_app/views/widgets/lista_provas.dart';
+import 'package:flutter_app/widgets/aluno_card.dart';
+import 'package:flutter_app/widgets/barra_superior.dart';
+import 'package:flutter_app/widgets/cabecalho_prova.dart';
+import 'package:flutter_app/widgets/campo_busca.dart';
+import 'package:flutter_app/widgets/correcao_aluno.dart';
+import 'package:flutter_app/widgets/filtro_disciplina.dart';
+import 'package:flutter_app/widgets/lista_provas.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -223,6 +225,80 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildCorrecaoProva() {
     final alunos = _getAlunosFiltrados();
-    return ListaAlunos(alunos: alunos);
+    final total = (_provaSelecionada!['alunos'] as List).length;
+    final titulo = _provaSelecionada!['titulo'];
+    final status =
+        alunos.any((aluno) => aluno['nota'] == null) ? 'Pendente' : 'Corrigido';
+
+    return Column(
+      children: [
+        CabecalhoProva(titulo: titulo, totalAlunos: total, status: status),
+        Container(
+          color: Theme.of(context).primaryColorLight.withOpacity(0.1),
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _abaFiltro('Avaliados', 'Corrigidos'),
+              _abaFiltro('Pendentes', 'Pendentes'),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: alunos.length,
+            itemBuilder: (context, index) {
+              final aluno = alunos[index];
+              return AlunoCard(
+                nome: aluno['nome'],
+                nota: aluno['nota']?.toString(),
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                // Lógica da correção
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => CorrecaoAluno(
+                          nomeProva: _provaSelecionada!['titulo'],
+                          alunos:
+                              (_provaSelecionada!['alunos'] as List)
+                                  .map((a) => a['nome'].toString())
+                                  .toList(),
+                        ),
+                  ),
+                );
+              },
+              child: const Text('Corrigir Prova'),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _abaFiltro(String label, String valor) {
+    final isSelected = _filtroStatus == valor;
+    return GestureDetector(
+      onTap: () {
+        setState(() => _filtroStatus = valor);
+      },
+      child: Text(
+        '$label (${_getAlunosFiltrados().length})',
+        style: TextStyle(
+          color: isSelected ? Theme.of(context).primaryColor : Colors.grey,
+          fontWeight: FontWeight.bold,
+          decoration: isSelected ? TextDecoration.underline : null,
+        ),
+      ),
+    );
   }
 }
