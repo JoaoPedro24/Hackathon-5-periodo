@@ -3,51 +3,106 @@
 <body>
 <div th:fragment="modalProva">
     <div class="modal fade" id="modalProva" tabindex="-1" aria-labelledby="modalProvaLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalProvaLabel" th:text="${prova?.id != null} ? 'Editar Prova' : 'Nova Prova'"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body">
-                    <form th:action="@{/prova}" method="post">
-                        <input type="hidden" name="id" th:value="${prova?.id}" />
+
+                <form th:action="@{/prova}" method="post" th:object="${prova}">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalProvaLabel">Nova Prova com Questões</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <!-- Campos da Prova -->
+                        <input type="hidden" th:field="*{id}" />
 
                         <div class="mb-3">
-                            <label for="nome" class="form-label">Nome:</label>
-                            <input type="text" class="form-control" id="nome" name="nome"
-                                   th:value="${prova?.id != null ? prova.nome : ''}" required />
+                            <label>Nome da Prova:</label>
+                            <input type="text" class="form-control" th:field="*{nome}" required />
                         </div>
 
                         <div class="mb-3">
-                            <label for="disciplina" class="form-label">Disciplina:</label>
-                            <select id="disciplina" name="disciplina.id" class="form-select" required>
-                                <option value="">Selecione um professor</option>
-                                <option th:each="disc : ${disciplinas}" th:value="${disc.id}" th:selected="${prova?.disciplina?.id == disc.id}"
-                                        th:text="${prof.nome}"></option>
+                            <label>Data de Aplicação:</label>
+                            <input type="date" class="form-control" th:field="*{dataAplicacao}" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Valor Total da Prova:</label>
+                            <input type="number" class="form-control" th:field="*{valorTotal}" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Disciplina:</label>
+                            <select class="form-select" th:field="*{disciplina.id}" required>
+                                <option value="">Selecione</option>
+                                <option th:each="disc : ${disciplinas}" th:value="${disc.id}" th:text="${disc.nome}"></option>
                             </select>
                         </div>
 
                         <div class="mb-3">
-                            <label for="turma" class="form-label">Turma:</label>
-                            <select id="turma" name="turma.id" class="form-select" required>
-                                <option value="">Selecione uma turma</option>
-                                <option th:each="turma : ${turmas}" th:value="${turma.id}" th:selected="${prova?.turma?.id == turma.id}"
-                                        th:text="${prof.nome}"></option>
+                            <label>Turma:</label>
+                            <select class="form-select" th:field="*{turma.id}" required>
+                                <option value="">Selecione</option>
+                                <option th:each="turma : ${turmas}" th:value="${turma.id}" th:text="${turma.nome}"></option>
                             </select>
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                            <button type="submit" class="btn btn-primary">
-                                <span th:text="${prova?.id != null} ? 'Atualizar' : 'Salvar'"></span>
-                            </button>
+                        <!-- Cadastro das Questões -->
+                        <div id="questoes-container">
+                            <h5>Questões</h5>
+                            <div th:each="questao, iterStat : *{questoes}">
+                                <div class="card p-3 mb-3">
+                                    <label>Enunciado:</label>
+                                    <input type="text" class="form-control mb-2" th:field="*{questoes[__${iterStat.index}__].enunciado}" required />
+
+                                    <label>Alternativa Correta:</label>
+                                    <input type="text" class="form-control mb-2" th:field="*{questoes[__${iterStat.index}__].alternativaCorreta}" required />
+
+                                    <label>Valor da Questão:</label>
+                                    <input type="number" class="form-control mb-2" th:field="*{questoes[__${iterStat.index}__].valor}" required />
+                                </div>
+                            </div>
                         </div>
-                    </form>
-                </div>
+
+                        <!-- Botão para adicionar nova questão via JavaScript -->
+                        <button type="button" class="btn btn-secondary" onclick="adicionarQuestao()">Adicionar Questão</button>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Salvar Prova e Questões</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+
+                </form>
+
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    let indexQuestao = /*[[${#lists.size(prova.questoes)}]]*/ 0;
+
+    function adicionarQuestao() {
+        const container = document.getElementById('questoes-container');
+        const novaQuestaoHtml = `
+            <div class="card p-3 mb-3">
+                <label>Enunciado:</label>
+                <input type="text" name="questoes[\${indexQuestao}].enunciado" class="form-control mb-2" required />
+
+                <label>Alternativa Correta:</label>
+                <input type="text" name="questoes[\${indexQuestao}].alternativaCorreta" class="form-control mb-2" required />
+
+                <label>Valor da Questão:</label>
+                <input type="number" name="questoes[\${indexQuestao}].valor" class="form-control mb-2" required />
+            </div>`;
+        container.insertAdjacentHTML('beforeend', novaQuestaoHtml);
+        indexQuestao++;
+    }
+</script>
+
 </body>
 </html>
