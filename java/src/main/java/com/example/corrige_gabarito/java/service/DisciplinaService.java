@@ -1,6 +1,7 @@
 package com.example.corrige_gabarito.java.service;
 
 import com.example.corrige_gabarito.java.model.Disciplina;
+import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.repository.DisciplinaRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,4 +32,10 @@ public class DisciplinaService {
     public void deletarPorId(Long id) {
         disciplinaRepository.deleteById(id);
     }
+
+    public List<Disciplina> listarPorProfessor(Usuario professor) {
+        return disciplinaRepository.findByProfessor (professor);
+    }
 }
+
+

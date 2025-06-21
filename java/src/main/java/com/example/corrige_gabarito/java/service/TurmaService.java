@@ -28,8 +28,7 @@ public class TurmaService {
     public Turma salvarTurmaComAlunos(Turma turma, List<Long> idsAlunos) {
         Set<Aluno> alunos = new HashSet<>(alunoRepository.findAllById(idsAlunos));
         turma.setAlunos(alunos);
-
-        // Atualiza turmas dos alunos também para consistência bidirecional
+        
         for (Aluno aluno : alunos) {
             aluno.getTurmas().add(turma);
         }

@@ -50,4 +50,12 @@ public class UsuarioService implements UserDetailsService {
     public void deletarPorId(Long id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Usuario buscarPorLogin(String login) {
+        return usuarioRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + login));
+    }
+
 }
+
+
