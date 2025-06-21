@@ -34,12 +34,6 @@ public class UsuarioController {
         return salvarOuAtualizar(usuario, model);
     }
     
-    @PostMapping("/editar/{id}")
-    public String atualizarPost(@PathVariable Long id, @ModelAttribute Usuario usuario, Model model) {
-        usuario.setId(id);
-        return salvarOuAtualizar(usuario, model);
-    }
-    
     private String salvarOuAtualizar(Usuario usuario, Model model) {
         try {
             if (usuario.getId() != null && (usuario.getPassword() == null || usuario.getPassword().isEmpty())) {

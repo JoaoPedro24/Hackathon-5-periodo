@@ -1,5 +1,6 @@
 package com.example.corrige_gabarito.java.controller;
 
+import com.example.corrige_gabarito.java.model.Aluno;
 import com.example.corrige_gabarito.java.model.Disciplina;
 import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.DisciplinaService;
@@ -22,10 +23,8 @@ public class DisciplinaController {
 
     @GetMapping("/listar")
     public String listar(Model model) {
-        List<Disciplina> disciplinas = disciplinaService.listarTodos();
-        List<Usuario> professores = usuarioService.listarUsuariosPorRole("PROFESSOR");
-        model.addAttribute("disciplinas", disciplinas);
-        model.addAttribute("professores", professores);
+        model.addAttribute("disciplinas", disciplinaService.listarTodos());
+        model.addAttribute("professores", usuarioService.listarUsuariosPorRole("PROFESSOR"));
         return "disciplina/lista";
     }
 
@@ -36,14 +35,23 @@ public class DisciplinaController {
 
     private String salvarOuAtualizar(Disciplina disciplina, Model model) {
         try {
+            if (disciplina.getProfessor() == null || disciplina.getProfessor().getId() == null) {
+                throw new IllegalArgumentException("Professor não selecionado");
+            }
+            
             Usuario professor = usuarioService.buscarPorId(disciplina.getProfessor().getId());
+            if (professor == null) {
+                throw new IllegalArgumentException("Professor não encontrado com o ID: " + disciplina.getProfessor().getId());
+            }
+            
             disciplina.setProfessor(professor);
-
             disciplinaService.salvar(disciplina);
             return "redirect:/disciplina/listar";
         } catch (Exception e) {
-            model.addAttribute("message", "Erro ao salvar disciplina: " + e.getMessage());
+            String errorMessage = "Erro ao salvar disciplina: " + e.getMessage();
+            model.addAttribute("message", errorMessage);
             model.addAttribute("professores", usuarioService.listarUsuariosPorRole("PROFESSOR"));
+            model.addAttribute("disciplina", disciplina);  // Keep the form data on error
             return "disciplina/lista";
         }
     }
@@ -51,8 +59,15 @@ public class DisciplinaController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model) {
         Disciplina disciplina = disciplinaService.buscarPorId(id);
-        model.addAttribute("disciplina", disciplina);
-        return "disciplina/formulario";
+        if (disciplina != null) {
+            model.addAttribute("disciplina", disciplina);
+        } else {
+            model.addAttribute("disciplina", new Disciplina());
+            model.addAttribute("message", "Disciplina não encontrado");
+        }
+        model.addAttribute("professores", usuarioService.listarUsuariosPorRole("PROFESSOR"));
+        model.addAttribute("disciplinas", disciplinaService.listarTodos());
+        return "disciplina/lista";
     }
 
     @GetMapping("/remover/{id}")

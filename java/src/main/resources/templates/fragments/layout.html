@@ -31,9 +31,6 @@
                     <a class="nav-link" th:href="@{/usuario/listar}">Usuários</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" th:href="@{'/matricula/listar'}">Matriculas</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" th:href="@{'/professor/listar'}">Professores</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">

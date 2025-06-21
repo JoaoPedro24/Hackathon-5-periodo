@@ -4,3 +4,7 @@
     border-radius: 10px;
     font-weight: bold;
 }
+
+a.nav-link.active {
+    padding-left: 10px;
+}

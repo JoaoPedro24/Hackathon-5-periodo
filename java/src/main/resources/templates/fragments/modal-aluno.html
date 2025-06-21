@@ -10,8 +10,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <form th:action="${aluno?.id != null} ? @{'/aluno/editar/' + ${aluno.id}} : @{/aluno}" method="post">
-
+                    <form th:action="@{/aluno}" method="post">
                         <input type="hidden" name="id" th:value="${aluno?.id}" />
 
                         <div class="mb-3">
@@ -20,6 +19,7 @@
                                 <option value="">Selecione um Usuário</option>
                                 <option th:each="users : ${usuarios}"
                                         th:value="${users.id}"
+                                        th:selected="${aluno?.usuario?.id == users.id}"
                                         th:text="${users.nome}"></option>
                             </select>
                         </div>

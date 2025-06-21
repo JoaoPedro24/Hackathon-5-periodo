@@ -19,8 +19,7 @@ public class DisciplinaService {
     }
 
     public Disciplina buscarPorId(Long id) {
-        return disciplinaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Disciplina não encontrada com id: " + id));
+        return disciplinaRepository.findById(id).orElse(null);
     }
 
     @Transactional
