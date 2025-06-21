@@ -1,7 +1,10 @@
 package com.example.corrige_gabarito.java.controller;
 
 import com.example.corrige_gabarito.java.model.Disciplina;
+import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.DisciplinaService;
+import com.example.corrige_gabarito.java.service.ProfessorService;
+import com.example.corrige_gabarito.java.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,23 +18,34 @@ import java.util.List;
 public class DisciplinaController {
 
     private final DisciplinaService disciplinaService;
-
-    @GetMapping
-    public String form(Disciplina disciplina) {
-        return "disciplina/formulario";
-    }
+    private final UsuarioService usuarioService;
 
     @GetMapping("/listar")
     public String listar(Model model) {
         List<Disciplina> disciplinas = disciplinaService.listarTodos();
+        List<Usuario> professores = usuarioService.listarUsuariosPorRole("PROFESSOR");
         model.addAttribute("disciplinas", disciplinas);
+        model.addAttribute("professores", professores);
         return "disciplina/lista";
     }
 
     @PostMapping
-    public String salvar(Disciplina disciplina) {
-        disciplinaService.salvar(disciplina);
-        return "redirect:/disciplina/listar";
+    public String salvar(@ModelAttribute Disciplina disciplina, Model model) {
+        return salvarOuAtualizar(disciplina, model);
+    }
+
+    private String salvarOuAtualizar(Disciplina disciplina, Model model) {
+        try {
+            Usuario professor = usuarioService.buscarPorId(disciplina.getProfessor().getId());
+            disciplina.setProfessor(professor);
+
+            disciplinaService.salvar(disciplina);
+            return "redirect:/disciplina/listar";
+        } catch (Exception e) {
+            model.addAttribute("message", "Erro ao salvar disciplina: " + e.getMessage());
+            model.addAttribute("professores", usuarioService.listarUsuariosPorRole("PROFESSOR"));
+            return "disciplina/lista";
+        }
     }
 
     @GetMapping("/editar/{id}")
