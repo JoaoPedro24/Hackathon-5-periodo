@@ -2,16 +2,40 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div th:fragment="modalDisciplina">
-    <div id="modalDisciplina" class="modal fade">
+    <div class="modal fade" id="modalDisciplina" tabindex="-1" aria-labelledby="modalDisciplinaLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content p-3">
-                <h3>Nova Disciplina</h3>
-                <form th:action="@{/disciplinas/salvar}" method="post">
-                    <label>Nome:</label>
-                    <input type="text" name="nome" class="form-control mb-2" required />
-                    <button type="submit" class="btn btn-success">Salvar</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('modalDisciplina')">Cancelar</button>
-                </form>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDisciplinaLabel" th:text="${disciplina?.id != null} ? 'Editar Disciplina' : 'Nova Disciplina'"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="${disciplina?.id != null} ? @{'/disciplina/editar/' + ${disciplina.id}} : @{/disciplina}" method="post">
+                        <input type="hidden" name="id" th:value="${disciplina?.id}" />
+
+                        <div class="mb-3">
+                            <label for="professor" class="form-label">Professor:</label>
+                            <select id="professor" name="professor.id" class="form-select" required>
+                                <option value="">Selecione um professor</option>
+                                <option th:each="prof : ${professores}" th:value="${prof.id}" th:selected="${disciplina?.professor?.id == prof.id}"
+                                        th:text="${prof.nome}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome:</label>
+                            <input type="text" class="form-control" id="nome" name="nome"
+                                   th:value="${disciplina?.nome}" required />
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="submit" class="btn btn-primary">
+                                <span th:text="${disciplina?.id != null} ? 'Atualizar' : 'Salvar'"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
