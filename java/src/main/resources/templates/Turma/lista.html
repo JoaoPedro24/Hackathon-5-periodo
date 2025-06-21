@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/layout :: head(paginaTitulo='Turmas')"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:replace="fragments/layout :: cabecalho"></header>
+<main class="flex-shrink-0">
+    <div class="container-md">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Lista de Turmas</h2>
+            <a href="#" id="btnNovaTurma" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTurma">
+                <i class="bi bi-plus-circle"></i> Nova Turma
+            </a>
+        </div>
+
+        <div th:if="${message}" class="alert alert-info">
+            <p th:text="${message}"></p>
+        </div>
+
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Quantidade de alunos</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="turma : ${turmas}">
+                <td th:text="${turma.id}"></td>
+                <td th:text="${turma.nome}"></td>
+                <td th:text="${turma.alunos?.size()}"></td>
+                <td>
+                    <a th:href="@{|/turma/editar/${turma.id}|}"
+                       class="btn btn-warning btn-sm">
+                        Editar
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/}" class="btn btn-secondary mt-3">
+            <i class="bi bi-arrow-left"></i> Voltar ao Início
+        </a>
+
+        <!-- Modal de Usuário -->
+        <div th:replace="fragments/modal-turma :: modalTurma"></div>
+
+        <!-- Script para gerenciar o modal -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Se estiver editando, abre o modal automaticamente
+                var turmaId = '[[${turma?.id}]]';
+                if (turmaId && turmaId !== 'null') {
+                    var myModal = new bootstrap.Modal(document.getElementById('modalTurma'));
+                    myModal.show();
+                }
+
+                // Limpa o estado quando o modal for fechado
+                document.getElementById('modalTurma').addEventListener('hidden.bs.modal', function () {
+                    if (turmaId && turmaId !== 'null') {
+                        window.location.href = '/turma/listar';
+                    }
+                });
+
+            });
+        </script>
+    </div>
+</main>
+
+<footer th:replace="fragments/layout :: rodape"></footer>
+
+</body>
+</html>
