@@ -19,12 +19,6 @@ public class AlunoController {
     private final AlunoService alunoService;
     private final UsuarioService usuarioService;
 
-
-    @GetMapping
-    public String form(Aluno aluno) {
-        return "aluno/formulario";
-    }
-
     @GetMapping("/listar")
     public String listar(Model model) {
         List<Aluno> alunos = alunoService.listarTodos();

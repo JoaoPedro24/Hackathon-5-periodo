@@ -22,7 +22,6 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .headers(header -> header.frameOptions(config -> config.sameOrigin()))
-                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**", "/css/**", "/error/**").permitAll()
                         .requestMatchers("/", "/login").permitAll()

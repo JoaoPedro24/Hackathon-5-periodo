@@ -1,7 +1,6 @@
 package com.example.corrige_gabarito.java.controller;
 
 import com.example.corrige_gabarito.java.model.Disciplina;
-import com.example.corrige_gabarito.java.model.Professor;
 import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.DisciplinaService;
 import com.example.corrige_gabarito.java.service.ProfessorService;
@@ -20,14 +19,13 @@ public class DisciplinaController {
 
     private final DisciplinaService disciplinaService;
     private final UsuarioService usuarioService;
-    private final ProfessorService professorService;
 
     @GetMapping("/listar")
     public String listar(Model model) {
         List<Disciplina> disciplinas = disciplinaService.listarTodos();
+        List<Usuario> professores = usuarioService.listarUsuariosPorRole("PROFESSOR");
         model.addAttribute("disciplinas", disciplinas);
-        model.addAttribute("disciplina", new Disciplina());
-        model.addAttribute("professores", usuarioService.listarUsuariosPorRole("PROFESSOR"));
+        model.addAttribute("professores", professores);
         return "disciplina/lista";
     }
 
@@ -38,7 +36,7 @@ public class DisciplinaController {
 
     private String salvarOuAtualizar(Disciplina disciplina, Model model) {
         try {
-            Professor professor = professorService.buscarPorId(disciplina.getProfessor().getId());
+            Usuario professor = usuarioService.buscarPorId(disciplina.getProfessor().getId());
             disciplina.setProfessor(professor);
 
             disciplinaService.salvar(disciplina);

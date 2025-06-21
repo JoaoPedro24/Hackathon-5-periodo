@@ -11,13 +11,16 @@
                 </div>
                 <div class="modal-body">
                     <form th:action="${aluno?.id != null} ? @{'/aluno/editar/' + ${aluno.id}} : @{/aluno}" method="post">
+
                         <input type="hidden" name="id" th:value="${aluno?.id}" />
 
                         <div class="mb-3">
                             <label for="usuario" class="form-label">Usuário:</label>
-                            <select id="usuario" class="form-select" required>
+                            <select id="usuario" name="usuario.id" class="form-select" required>
                                 <option value="">Selecione um Usuário</option>
-                                <option th:each="users : ${usuarios}" th:value="${users.id}" th:text="${users.nome}"></option>
+                                <option th:each="users : ${usuarios}"
+                                        th:value="${users.id}"
+                                        th:text="${users.nome}"></option>
                             </select>
                         </div>
 
@@ -33,6 +36,7 @@
                                 <span th:text="${aluno?.id != null} ? 'Atualizar' : 'Salvar'"></span>
                             </button>
                         </div>
+
                     </form>
                 </div>
             </div>

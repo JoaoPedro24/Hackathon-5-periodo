@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/layout :: head(paginaTitulo='Alunos')"></head>
+<head th:replace="fragments/layout :: head(paginaTitulo='Professores')"></head>
 <body class="d-flex flex-column min-vh-100">
 
 <header th:replace="fragments/layout :: cabecalho"></header>
 <main class="flex-shrink-0">
     <div class="container-md">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Lista de Alunos</h2>
-            <a href="#" id="btnNovoAluno" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAluno">
-                <i class="bi bi-plus-circle"></i> Novo Aluno
+            <h2 class="mb-0">Lista de Professores</h2>
+            <a href="#" id="btnNovoprofessor" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalprofessor">
+                <i class="bi bi-plus-circle"></i> Novo professor
             </a>
         </div>
 
@@ -23,11 +23,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="aluno : ${alunos}">
-                <td th:text="${aluno.id}"></td>
-                <td th:text="${aluno.usuario.nome}"></td>
+            <tr th:each="professor : ${professor}">
+                <td th:text="${professor.id}"></td>
+                <td th:text="${professor.usuario.nome}"></td>
                 <td>
-                    <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}"
+                    <a th:href="@{/professor/editar/{id}(id=${professor.id})}"
                        class="btn btn-warning btn-sm">
                         Editar
                     </a>
@@ -40,7 +40,7 @@
             <i class="bi bi-arrow-left"></i> Voltar ao Início
         </a>
 
-        <div th:replace="fragments/modal-aluno :: modalAluno"></div>
+        <div th:replace="fragments/modal-professor :: modalProfessor"></div>
     </div>
 </main>
 
@@ -48,9 +48,9 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var alunoId = /*[[${aluno?.id}]]*/ null;
-        if (alunoId !== null && alunoId !== '') {
-            var myModal = new bootstrap.Modal(document.getElementById('modalAluno'));
+        var professorId = /*[[${professor?.id}]]*/ null;
+        if (professorId !== null && professorId !== '') {
+            var myModal = new bootstrap.Modal(document.getElementById('modalprofessor'));
             myModal.show();
         }
     });
