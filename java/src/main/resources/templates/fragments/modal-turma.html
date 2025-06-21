@@ -67,8 +67,8 @@
                                     th:text="${aluno.usuario?.nome + ' - ' + aluno.matricula}"></option>
                         </select>
 
-                        <!-- Container onde os selects de alunos vão aparecer -->
-                        <label>Alunos:</label>
+                        <hr>
+                        <h6>Alunos:</h6>
                         <div id="alunosContainer">
                             <!-- Se for edição, pode já carregar os alunos existentes -->
                             <div th:each="aluno : ${turma.alunos}" class="input-group mb-2 d-flex align-items-center">
@@ -83,8 +83,11 @@
                             </div>
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-primary" onclick="addAlunoField()">Adicionar Aluno</button>
+                        <button type="button" class="btn btn-outline-primary mt-2" onclick="addAlunoField()">
+                            <i class="bi bi-plus-circle"></i> Adicionar
+                        </button>
+
+                        <div class="modal-footer mt-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                             <button type="submit" class="btn btn-primary">
                                 <span th:text="${turma?.id != null} ? 'Atualizar' : 'Salvar'"></span>

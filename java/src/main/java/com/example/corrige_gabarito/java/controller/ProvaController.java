@@ -34,25 +34,15 @@ public class ProvaController {
     }
 
     @PostMapping
-    public String salvar(@ModelAttribute Prova prova, Principal principal) {
-        Usuario professor = usuarioService.buscarPorLogin(principal.getName());
-        prova.setProfessor(professor);
-
-        // Vincula as questões à prova
-        if (prova.getQuestoes() != null) {
-            for (Questao questao : prova.getQuestoes()) {
-                questao.setProva(prova);
-            }
-        }
-
-        provaService.salvar(prova);
-        return "redirect:/prova/listar";
+    public String salvar(@ModelAttribute Prova prova, Principal principal, Model model) {
+        return salvarOuAtualizar(prova, principal, model);
     }
 
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model, Principal principal) {
         Usuario professor = usuarioService.buscarPorLogin(principal.getName());
         Prova prova = provaService.buscarPorId(id);
+
         if (prova == null) {
             return "redirect:/prova/listar";
         }
@@ -63,33 +53,43 @@ public class ProvaController {
         model.addAttribute("prova", prova);
         model.addAttribute("disciplinas", disciplinasDoProfessor);
         model.addAttribute("turmas", turmas);
-        return "prova/formulario";
+        model.addAttribute("provas", provaService.listarTodas());
+
+        return "prova/lista";
     }
 
-    @PostMapping("/editar/{id}")
-    public String atualizar(@PathVariable Long id, @ModelAttribute Prova provaAtualizada, Principal principal) {
-        Usuario professor = usuarioService.buscarPorLogin(principal.getName());
-        Prova provaExistente = provaService.buscarPorId(id);
-
-        if (provaExistente == null) {
-            return "redirect:/prova/listar";
-        }
-
-        provaExistente.setNome(provaAtualizada.getNome());
-        provaExistente.setDataAplicacao(provaAtualizada.getDataAplicacao());
-        provaExistente.setValorTotal(provaAtualizada.getValorTotal());
-        provaExistente.setDisciplina(provaAtualizada.getDisciplina());
-        provaExistente.setTurma(provaAtualizada.getTurma());
-        provaExistente.setProfessor(professor);
-
-        provaService.salvar(provaExistente);
-
-        return "redirect:/prova/listar";
-    }
 
     @GetMapping("/remover/{id}")
     public String remover(@PathVariable Long id) {
         provaService.deletarPorId(id);
         return "redirect:/prova/listar";
+    }
+
+    /**
+     * Método auxiliar para salvar ou atualizar prova (evitando duplicação de código)
+     */
+    private String salvarOuAtualizar(Prova prova, Principal principal, Model model) {
+        try {
+            Usuario professor = usuarioService.buscarPorLogin(principal.getName());
+            prova.setProfessor(professor);
+
+            if (prova.getQuestoes() != null) {
+                prova.getQuestoes().forEach(q -> q.setProva(prova));
+            }
+
+            System.out.println(prova);
+            System.out.println(prova.getQuestoes());
+
+            provaService.salvar(prova);
+            return "redirect:/prova/listar";
+
+        } catch (Exception e) {
+            model.addAttribute("message", "Não foi possível salvar a prova: " + e.getMessage());
+            model.addAttribute("provas", provaService.listarTodas());
+            model.addAttribute("disciplinas", disciplinaService.listarPorProfessor(usuarioService.buscarPorLogin(principal.getName())));
+            model.addAttribute("turmas", turmaService.listarTodas());
+            model.addAttribute("prova", prova);
+            return "prova/lista";
+        }
     }
 }
