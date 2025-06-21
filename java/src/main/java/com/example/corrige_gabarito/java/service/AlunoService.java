@@ -1,7 +1,9 @@
 package com.example.corrige_gabarito.java.service;
 
 import com.example.corrige_gabarito.java.model.Aluno;
+import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.repository.AlunoRepository;
+import com.example.corrige_gabarito.java.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,14 +15,14 @@ import java.util.List;
 public class AlunoService {
 
     private final AlunoRepository alunoRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<Aluno> listarTodos() {
         return alunoRepository.findAll();
     }
 
     public Aluno buscarPorId(Long id) {
-        return alunoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Aluno não encontrado com id: " + id));
+        return alunoRepository.findById(id).orElse(null);
     }
 
     @Transactional
@@ -31,5 +33,9 @@ public class AlunoService {
     @Transactional
     public void deletarPorId(Long id) {
         alunoRepository.deleteById(id);
+    }
+    
+    public List<Usuario> listarUsuariosNaoAssociados() {
+        return usuarioRepository.findAlunosNaoAssociados();
     }
 }

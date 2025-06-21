@@ -14,20 +14,26 @@
             </a>
         </div>
 
+        <div th:if="${message}" class="alert alert-info">
+            <p th:text="${message}"></p>
+        </div>
+
         <table class="table table-striped table-hover">
             <thead>
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
+                <th>Matrícula</th>
                 <th>Ações</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="aluno : ${alunos}">
-                <td th:text="${aluno.id}"></td>
-                <td th:text="${aluno.usuario.nome}"></td>
+            <tr th:each="itemAluno : ${alunos}">
+                <td th:text="${itemAluno.id}"></td>
+                <td th:text="${itemAluno.usuario?.nome}"></td>
+                <td th:text="${itemAluno.matricula}"></td>
                 <td>
-                    <a th:href="@{/alunos/editar/{id}(id=${aluno.id})}"
+                    <a th:href="@{|/aluno/editar/${itemAluno.id}|}"
                        class="btn btn-warning btn-sm">
                         Editar
                     </a>
@@ -40,21 +46,32 @@
             <i class="bi bi-arrow-left"></i> Voltar ao Início
         </a>
 
+        <!-- Modal de Usuário -->
         <div th:replace="fragments/modal-aluno :: modalAluno"></div>
+
+        <!-- Script para gerenciar o modal -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Se estiver editando, abre o modal automaticamente
+                var alunoId = '[[${aluno?.id}]]';
+                if (alunoId && alunoId !== 'null') {
+                    var myModal = new bootstrap.Modal(document.getElementById('modalAluno'));
+                    myModal.show();
+                }
+
+                // Limpa o estado quando o modal for fechado
+                document.getElementById('modalAluno').addEventListener('hidden.bs.modal', function () {
+                    if (alunoId && alunoId !== 'null') {
+                        window.location.href = '/aluno/listar';
+                    }
+                });
+
+            });
+        </script>
     </div>
 </main>
 
 <footer th:replace="fragments/layout :: rodape"></footer>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var alunoId = /*[[${aluno?.id}]]*/ null;
-        if (alunoId !== null && alunoId !== '') {
-            var myModal = new bootstrap.Modal(document.getElementById('modalAluno'));
-            myModal.show();
-        }
-    });
-</script>
 
 </body>
 </html>

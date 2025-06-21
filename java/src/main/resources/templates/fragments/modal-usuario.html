@@ -10,7 +10,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <form th:action="${usuario?.id != null} ? @{'/usuario/editar/' + ${usuario.id}} : @{/usuario}" method="post">
+                    <form action="/usuario" method="post">
                         <input type="hidden" name="id" th:value="${usuario?.id}" />
                         
                         <div class="mb-3">
