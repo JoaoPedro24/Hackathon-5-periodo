@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
@@ -27,7 +26,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .headers(header -> header.frameOptions(config -> config.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()    // CORRIGIDO AQUI
+                        .requestMatchers("/auth/login").permitAll()
                         .requestMatchers("/images/**", "/css/**", "/error/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/banco/**", "/usuario/**").hasRole("ADMIN")

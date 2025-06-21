@@ -3,6 +3,8 @@ package com.example.corrige_gabarito.java.api;
 import com.example.corrige_gabarito.java.api.dto.AuthResponse;
 import com.example.corrige_gabarito.java.api.dto.LoginDto;
 import com.example.corrige_gabarito.java.model.Usuario;
+import com.example.corrige_gabarito.java.repository.DisciplinaRepository;
+import com.example.corrige_gabarito.java.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,13 +12,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
+
 public class AuthController {
 
     @Autowired
@@ -25,6 +26,11 @@ public class AuthController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDTO) {
