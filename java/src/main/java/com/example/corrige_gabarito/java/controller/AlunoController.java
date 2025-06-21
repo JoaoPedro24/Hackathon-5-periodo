@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @AllArgsConstructor
 @RequestMapping("/aluno")
@@ -20,9 +18,7 @@ public class AlunoController {
 
     private final AlunoService alunoService;
     private final UsuarioService usuarioService;
-
     private final PasswordEncoder passwordEncoder;
-
 
     @GetMapping("/listar")
     public String listar(Model model) {
@@ -43,11 +39,16 @@ public class AlunoController {
                 aluno.setUsuario(usuario);
             }
 
+            if (aluno.getUsuario() != null && aluno.getUsuario().getId() != null) {
+                Usuario usuario = usuarioService.buscarPorId(aluno.getUsuario().getId());
+                aluno.setUsuario(usuario);
+            }
+
             alunoService.salvar(aluno);
             return "redirect:/aluno/listar";
 
         } catch (Exception e) {
-            model.addAttribute("message", "Não foi possível salvar o usuário: " + e.getMessage());
+            model.addAttribute("message", "Não foi possível salvar o aluno: " + e.getMessage());
             model.addAttribute("alunos", alunoService.listarTodos());
             model.addAttribute("usuarios", alunoService.listarUsuariosNaoAssociados());
             return "aluno/lista";
