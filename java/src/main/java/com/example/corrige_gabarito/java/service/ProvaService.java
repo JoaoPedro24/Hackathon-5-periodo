@@ -28,4 +28,9 @@ public class ProvaService {
     public void deletarPorId(Long id) {
         provaRepository.deleteById(id);
     }
+
+    public List<Prova> listarPorProfessorId(Long professorId) {
+        return provaRepository.findByProfessorId(professorId);
+    }
+
 }

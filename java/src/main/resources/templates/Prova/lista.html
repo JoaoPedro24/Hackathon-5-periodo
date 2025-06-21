@@ -17,6 +17,10 @@
             </a>
         </div>
 
+        <div th:if="${message}" class="alert alert-info">
+            <p th:text="${message}"></p>
+        </div>
+
         <table class="table table-striped table-hover">
             <thead>
             <tr>
@@ -53,7 +57,25 @@
 
         <!-- Modal para nova prova (vazio) -->
         <div th:replace="fragments/modal-prova :: modalProva"></div>
+        <!-- Script para gerenciar o modal -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Se estiver editando, abre o modal automaticamente
+                var provaId = '[[${prova?.id}]]';
+                if (provaId && provaId !== 'null') {
+                    var myModal = new bootstrap.Modal(document.getElementById('modalProva'));
+                    myModal.show();
+                }
 
+                // Limpa o estado quando o modal for fechado
+                document.getElementById('modalProva').addEventListener('hidden.bs.modal', function () {
+                    if (provaId && provaId !== 'null') {
+                        window.location.href = '/prova/listar';
+                    }
+                });
+
+            });
+        </script>
     </div>
 </main>
 
