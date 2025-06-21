@@ -24,7 +24,7 @@ public class Disciplina {
 
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
-    private Professor professor;
+    private Usuario professor;
 
     @ManyToMany
     @JoinTable(
