@@ -2,11 +2,11 @@ package com.example.corrige_gabarito.java.api;
 
 
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -41,14 +41,51 @@ public class JwtTokenProvider {
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
 
+        // Captura as roles (authorities) do usuário autenticado
+        var roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("roles", roles) // ✅ adiciona as roles no payload
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
+    }
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(key) // Usa a mesma chave para validar a assinatura
+                .build()
+                .parseClaimsJws(token) // Faz o parse do token, validando a assinatura
+                .getBody(); // Obtém o corpo (payload) do token
+
+        return claims.getSubject(); // Retorna o 'subject' (nome de usuário)
+    }
+    public boolean validateToken(String authToken) {
+        try {
+            Jwts.parser().setSigningKey(key).build().parseClaimsJws(authToken);
+            return true;
+        } catch (MalformedJwtException ex) {
+            // Logar ou lidar com exceções de token malformado
+            System.err.println("Token JWT inválido: " + ex.getMessage());
+        } catch (ExpiredJwtException ex) {
+            // Logar ou lidar com exceções de token expirado
+            System.err.println("Token JWT expirado: " + ex.getMessage());
+        } catch (UnsupportedJwtException ex) {
+            // Logar ou lidar com exceções de token não suportado
+            System.err.println("Token JWT não suportado: " + ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            // Logar ou lidar com exceções de argumento ilegal (ex: string JWT vazia)
+            System.err.println("String JWT vazia: " + ex.getMessage());
+        } catch (io.jsonwebtoken.security.SignatureException ex) {
+            // Logar ou lidar com exceções de assinatura inválida (chave incorreta)
+            System.err.println("Assinatura JWT inválida: " + ex.getMessage());
+        }
+        return false;
     }
 }
