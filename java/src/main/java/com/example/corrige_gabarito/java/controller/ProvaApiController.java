@@ -1,10 +1,12 @@
-package com.example.corrige_gabarito.java.api.dto;
+package com.example.corrige_gabarito.java.controller;
 
+import com.example.corrige_gabarito.java.api.dto.ProvaDto;
 import com.example.corrige_gabarito.java.model.Prova;
 import com.example.corrige_gabarito.java.model.Questao;
 import com.example.corrige_gabarito.java.service.ProvaService;
 import com.example.corrige_gabarito.java.service.UsuarioService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +14,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/api/provas")
-public class    ProvaApiController {
+@RequiredArgsConstructor
+public class ProvaApiController {
 
     private final ProvaService provaService;
     private final UsuarioService usuarioService;
@@ -68,7 +70,6 @@ public class    ProvaApiController {
                 .tipo(questao.getTipo().name())
                 .valor(questao.getValor())
                 .enunciado(questao.getEnunciado())
-                .respostaCorreta(questao.getRespostaCorreta())
                 .build();
     }
 }

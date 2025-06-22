@@ -29,6 +29,5 @@ public class ProvaDto {
         private String tipo;
         private BigDecimal valor;
         private String enunciado;
-        private String respostaCorreta;  // Opcional, pode remover se quiser esconder a resposta correta
     }
 }

@@ -3,6 +3,8 @@ package com.example.corrige_gabarito.java.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "respostas_aluno")
 @Data
@@ -12,15 +14,21 @@ public class RespostaAluno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "aluno_id", nullable = false)
-    private Long alunoId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "aluno_id", nullable = false)
+    private Aluno aluno;
 
-    @Column(name = "prova_id", nullable = false)
-    private Long provaId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "prova_id", nullable = false)
+    private Prova prova;
 
-    @Column(nullable = false)
-    private int enunciado;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "questao_id", nullable = false)
+    private Questao questao;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal valor;
+
+    @Column(nullable = true)
     private String resposta;
 }
