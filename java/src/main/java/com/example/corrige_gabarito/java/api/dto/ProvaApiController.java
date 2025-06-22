@@ -1,6 +1,5 @@
-package com.example.corrige_gabarito.java.api;
+package com.example.corrige_gabarito.java.api.dto;
 
-import com.example.corrige_gabarito.java.api.dto.ProvaDto;
 import com.example.corrige_gabarito.java.model.Prova;
 import com.example.corrige_gabarito.java.model.Questao;
 import com.example.corrige_gabarito.java.service.ProvaService;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/provas")
-public class ProvaApiController {
+public class    ProvaApiController {
 
     private final ProvaService provaService;
     private final UsuarioService usuarioService;
