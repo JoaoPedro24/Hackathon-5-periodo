@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
+import '../models/prova_model.dart';
 
 class ProvaCard extends StatelessWidget {
-  final Map<String, dynamic> prova;
-  final VoidCallback onVisualizar;
+  final ProvaModel prova;
+  final VoidCallback? onVisualizar;
 
-  const ProvaCard({super.key, required this.prova, required this.onVisualizar});
+  const ProvaCard({
+    super.key,
+    required this.prova,
+    this.onVisualizar, // parâmetro opcional
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
       child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: CircleAvatar(
-          backgroundColor: prova['cor'],
-          child: Icon(prova['icone'], color: Colors.white),
-        ),
-        title: Text(prova['titulo'], style: theme.textTheme.titleMedium),
-        subtitle: Text(
-          '${prova['disciplina']} - ${prova['data']}',
-          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-        ),
-        trailing: ElevatedButton(
-          onPressed: onVisualizar,
-          child: const Text('Visualizar'),
-        ),
+        title: Text(prova.nome, style: theme.textTheme.titleMedium),
+        subtitle: Text('Disciplina: ${prova.disciplina}\nTurma: ${prova.turma}'),
+        trailing: Text('${prova.valorTotal.toStringAsFixed(2)} pts'),
+        onTap: onVisualizar,
       ),
     );
   }
