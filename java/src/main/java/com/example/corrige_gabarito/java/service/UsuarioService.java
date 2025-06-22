@@ -13,24 +13,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-@AllArgsConstructor
 public class UsuarioService implements UserDetailsService {
 
 @Autowired
     private final UsuarioRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
+    public UsuarioService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByLogin(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o login: " + username));
+        // ENCONTRE SEU USUÁRIO NO BANCO DE DADOS
+        Usuario usuario = usuarioRepository.findByLogin(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+
+        // ESTA LINHA É CRÍTICA! DEVE RETORNAR SUA INSTÂNCIA DE USUARIO!
+        return usuario; // <<<<<<<<<<<<<<<< ESTA É A LINHA QUE DEVE ESTAR ASSIM
+        // NÃO PODE SER: return new org.springframework.security.core.userdetails.User(...)
     }
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
-        if (!usuario.getPassword().startsWith("$2a$")) {
-            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-        }
+        // A senha JÁ DEVE ESTAR CODIFICADA quando este método for chamado.
+        // O PasswordEncoder deve ser usado ANTES de chamar .salvar()
+        // por exemplo, no seu AuthController ou em um serviço de registro.
         return usuarioRepository.save(usuario);
     }
     public List<Usuario> listarTodos() {

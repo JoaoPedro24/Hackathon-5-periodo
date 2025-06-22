@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/widgets/correcao_gabarito_button.dart';
-import 'package:flutter_app/views/selecao_disciplina_turma_page.dart';
 
 class ProfessorHomePage extends StatefulWidget {
   const ProfessorHomePage({super.key});
@@ -10,14 +9,6 @@ class ProfessorHomePage extends StatefulWidget {
 }
 
 class _ProfessorHomePageState extends State<ProfessorHomePage> {
-  void _navigateToCorrecaoGabarito() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SelecaoDisciplinaTurmaPage(),
-      ),
-    );
-  }
 
   final List<_MenuItem> _menuItems = [
     _MenuItem(
@@ -82,9 +73,7 @@ class _ProfessorHomePageState extends State<ProfessorHomePage> {
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                child: CorrecaoGabaritoButton(
-                  onPressed: _navigateToCorrecaoGabarito,
-                ),
+
               ),
               const SizedBox(height: 32),
               // Menu items grid/list
@@ -131,13 +120,7 @@ class _ProfessorHomePageState extends State<ProfessorHomePage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
 
-        },
-        child: const Icon(Icons.add),
-        tooltip: 'Adicionar novo',
-      ),
     );
   }
 }

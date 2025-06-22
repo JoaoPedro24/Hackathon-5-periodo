@@ -30,6 +30,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        System.out.println("DEBUG: Role do usuário no método getAuthorities(): " + this.role); // ADICIONE AQUI
         if ("ADMIN".equalsIgnoreCase(this.role)) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else if ("PROFESSOR".equalsIgnoreCase(this.role)) {
