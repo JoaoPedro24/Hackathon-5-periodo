@@ -50,14 +50,14 @@ public class SecurityConfig {
 
                         // 4. URLs específicas para APIs que exigem roles específicas (antes da /api/** genérica)
                         // Esta é a regra de /api/provas que você já tinha, está no lugar correto agora em relação à /api/**
-                        .requestMatchers("/api/provas/**").hasAnyRole("ADMIN", "PROFESSOR", "ALUNO") // Mantenha "ALUNO" se for o caso
+                        .requestMatchers("/api/provas/**").permitAll() // Mantenha "ALUNO" se for o caso
 
                         // 5. URLs para notas (também específica, mas para múltiplos perfis)
                         .requestMatchers("/notas/**").hasAnyRole("ALUNO", "ADMIN", "PROFESSOR")
 
                         // 6. A REGRA GENÉRICA PARA /API/** DEVE VIR POR ÚLTIMO ENTRE AS REGRAS DE API!
                         // Ela vai capturar qualquer /api/ que NÃO tenha sido coberto pelas regras mais específicas acima.
-                        .requestMatchers("/api/**").hasAnyRole("ADMIN", "PROFESSOR", "ALUNO") // Se houver APIs gerais para todos
+                        .requestMatchers("/api/**").permitAll() // Se houver APIs gerais para todos
 
                         // 7. Qualquer outra requisição que não foi capturada acima, deve estar autenticada.
                         .anyRequest().authenticated()
