@@ -8,8 +8,11 @@ import 'package:flutter_app/views/login_page.dart';
 import 'package:flutter_app/views/professor_home_page.dart';
 import 'package:provider/provider.dart';
 
+import '../views/provas/provas_page.dart';
+
 class MyAppf extends StatelessWidget {
   const MyAppf({super.key});
+
   // MyAppf é o nome da classe que representa o aplicativo Flutter, que utiliza o pacote MaterialApp para definir o tema, como faziamos no Main.dart
   @override
   Widget build(BuildContext context) {
@@ -20,10 +23,16 @@ class MyAppf extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: themeApp(),
         initialRoute: '/login',
-        routes: {'/login': (_) => LoginPage(), '/home': (_) => HomePage(),
-         '/adminHome': (context) => AdminHomePage(), // <--- ADICIONE ESTA LINHA
-          '/professorHome': (context) => ProfessorHomePage(), // <--- ADICIONE ESTA LINHA
-          '/alunoHome': (context) => AlunoHomePage(), },
+        routes: {
+          '/login': (_) => LoginPage(),
+          '/home': (_) => HomePage(),
+          '/adminHome': (context) => AdminHomePage(),
+          // <--- ADICIONE ESTA LINHA
+          '/professorHome': (context) => ProfessorHomePage(),
+          // <--- ADICIONE ESTA LINHA
+          '/alunoHome': (context) => AlunoHomePage(),
+          '/provas': (context) => ProvasPage(),
+        },
       ),
     );
   }

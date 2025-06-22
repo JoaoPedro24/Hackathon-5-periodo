@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/widgets/correcao_gabarito_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfessorHomePage extends StatefulWidget {
   const ProfessorHomePage({super.key});
@@ -9,33 +9,39 @@ class ProfessorHomePage extends StatefulWidget {
 }
 
 class _ProfessorHomePageState extends State<ProfessorHomePage> {
+  String? nomeUsuario;
 
+  @override
+  void initState() {
+    super.initState();
+    carregarNomeUsuario();
+  }
+
+  Future<void> carregarNomeUsuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nomeUsuario = prefs.getString('usuario_nome') ?? 'Professor';
+    });
+  }
   final List<_MenuItem> _menuItems = [
     _MenuItem(
       icon: Icons.assignment,
       title: 'Gerenciar Provas',
       subtitle: 'Criar e editar provas',
-      onTap: () {
-
-      },
+      routeName: '/provas',
     ),
     _MenuItem(
       icon: Icons.people,
       title: 'Gerenciar Turmas',
       subtitle: 'Visualizar e editar turmas',
-      onTap: () {
-
-      },
+      routeName: '/turmas',
     ),
     _MenuItem(
       icon: Icons.analytics,
       title: 'Relatórios',
       subtitle: 'Visualizar estatísticas e relatórios',
-      onTap: () {
-
-      },
+      routeName: '/relatorios',
     ),
-    // Adicionar mais itens conforme necessidade
   ];
 
   @override
@@ -66,17 +72,11 @@ class _ProfessorHomePageState extends State<ProfessorHomePage> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Bem-vindo, Professor!',
+                'Bem-vindo, $nomeUsuario!',
                 style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-
-              ),
               const SizedBox(height: 32),
-              // Menu items grid/list
               ListView.separated(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -111,7 +111,12 @@ class _ProfessorHomePageState extends State<ProfessorHomePage> {
                         size: 16,
                         color: theme.hintColor,
                       ),
-                      onTap: item.onTap,
+                      onTap: () {
+                        Navigator.pushReplacementNamed(
+                          context,
+                          item.routeName,
+                        );
+                      },
                     ),
                   );
                 },
@@ -120,7 +125,6 @@ class _ProfessorHomePageState extends State<ProfessorHomePage> {
           ),
         ),
       ),
-
     );
   }
 }
@@ -129,12 +133,12 @@ class _MenuItem {
   final IconData icon;
   final String title;
   final String subtitle;
-  final VoidCallback onTap;
+  final String routeName;
 
   _MenuItem({
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.onTap,
+    required this.routeName,
   });
 }
