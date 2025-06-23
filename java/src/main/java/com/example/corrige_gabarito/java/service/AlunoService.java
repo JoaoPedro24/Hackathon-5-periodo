@@ -38,4 +38,8 @@ public class AlunoService {
     public List<Usuario> listarUsuariosNaoAssociados() {
         return usuarioRepository.findAlunosNaoAssociados();
     }
+
+    public Aluno buscarPorUsuario(Usuario usuario) {
+        return alunoRepository.findByUsuario(usuario);
+    }
 }

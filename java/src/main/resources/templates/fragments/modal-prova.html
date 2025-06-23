@@ -138,6 +138,11 @@
                 <div class="modal-body">
                     <form th:action="@{/prova}" method="post">
                         <input type="hidden" name="id" th:value="${prova?.id}"/>
+                        <div class="mb-3">
+                            <label for="dataAplicacao">Data da Aplicação:</label>
+                            <input type="date" id="dataAplicacao" name="dataAplicacao" class="form-control" th:value="${prova?.dataAplicacao}"
+                                   required/>
+                        </div>
 
                         <div class="row mb-3">
                             <div class="col">
