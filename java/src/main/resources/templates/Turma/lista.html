@@ -37,6 +37,8 @@
                        class="btn btn-warning btn-sm">
                         Editar
                     </a>
+                    <a th:href="@{/turma/remover/} + ${turma.id}" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Tem certeza que deseja excluir esta turma?');">Remover</a>
                 </td>
             </tr>
             </tbody>

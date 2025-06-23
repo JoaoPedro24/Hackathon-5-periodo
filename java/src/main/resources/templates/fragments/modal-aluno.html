@@ -15,13 +15,15 @@
 
                         <div class="mb-3">
                             <label for="usuario" class="form-label">Usuário:</label>
-                            <select id="usuario" name="usuario.id" class="form-select" required>
+                            <select id="usuario" name="usuario.id" class="form-select" required
+                                    th:disabled="${aluno?.id != null}">
                                 <option value="">Selecione um Usuário</option>
                                 <option th:each="users : ${usuarios}"
                                         th:value="${users.id}"
                                         th:selected="${aluno?.usuario?.id == users.id}"
                                         th:text="${users.nome}"></option>
                             </select>
+                            <input type="hidden" name="usuario.id" th:value="${aluno?.usuario?.id}" th:if="${aluno?.id != null}" />
                         </div>
 
                         <div class="mb-3">

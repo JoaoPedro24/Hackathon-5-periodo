@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head(paginaTitulo='Resultado')"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:replace="fragments/layout :: cabecalho"></header>
+<main class="flex-shrink-0">
+    <div class="container mt-4">
+
+        <!-- Card minimalista com informações da prova -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4 text-primary fw-bold">Resultados da Prova</h4>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted text-uppercase fw-medium mb-1 d-block">Disciplina</small>
+                            <span class="h6 mb-0 text-dark" th:text="${prova.disciplina.nome}">Disciplina</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted text-uppercase fw-medium mb-1 d-block">Turma</small>
+                            <span class="h6 mb-0 text-dark" th:text="${prova.turma.nome}">Turma</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted text-uppercase fw-medium mb-1 d-block">Data da Prova</small>
+                            <span class="h6 mb-0 text-dark" th:text="${#temporals.format(prova.dataAplicacao, 'dd/MM/yyyy')}">01/01/2025</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted text-uppercase fw-medium mb-1 d-block">Nota Máxima</small>
+                            <span class="h6 mb-0 text-primary fw-bold" th:text="${notaMaxima}">10.0</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-3 p-3">
+                            <small style="text-wrap-mode: nowrap" class="text-muted text-uppercase fw-medium mb-1 d-block">Média da Turma</small>
+                            <span class="h6 mb-0 text-success fw-bold" th:text="${#numbers.formatDecimal(mediaTurma, 1, 1)}">0.0</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted text-uppercase fw-medium mb-1 d-block">Progresso</small>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="h6 mb-0 text-dark" th:text="${provasCorrigidas}">0</span>
+                                <small class="text-muted">/</small>
+                                <span class="h6 mb-0 text-dark" th:text="${totalProvas}">0</span>
+                                <small class="text-muted">alunos</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de alunos corrigidos -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0 text-dark fw-semibold">Notas por Aluno</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                        <tr>
+                            <th class="border-0 py-3">Aluno</th>
+                            <th class="border-0 py-3">Nota</th>
+                            <th class="border-0 py-3">Questões Certas</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="resultado : ${resultados}">
+                            <td class="py-3" th:text="${resultado.alunoNome}">Nome do Aluno</td>
+                            <td class="py-3">
+                                <span class="badge bg-primary fs-6" th:text="${resultado.nota}">0.0</span>
+                            </td>
+                            <td class="py-3" th:text="${resultado.quantidadeCertas}">0</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de alunos não corrigidos -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0 text-dark fw-semibold">Alunos Ainda Não Corrigidos</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-warning">
+                        <tr>
+                            <th class="border-0 py-3">Aluno</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="alunoNome : ${alunosNaoCorrigidos}">
+                            <td class="py-3" th:text="${alunoNome}">Nome Aluno Não Corrigido</td>
+                        </tr>
+                        <tr th:if="${alunosNaoCorrigidos.isEmpty()}">
+                            <td class="text-center py-4 text-muted">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                Todos os alunos já foram corrigidos.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão de voltar -->
+        <div class="d-flex justify-content-start">
+            <a th:href="@{/prova/listar}" class="btn btn-secondary mt-3">
+                <i class="bi bi-arrow-left me-2"></i>
+                Voltar
+            </a>
+        </div>
+
+    </div>
+</main>
+<footer th:replace="fragments/layout :: rodape"></footer>
+</body>
+</html>

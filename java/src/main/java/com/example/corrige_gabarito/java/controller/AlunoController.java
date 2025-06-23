@@ -1,23 +1,31 @@
 package com.example.corrige_gabarito.java.controller;
 
-import com.example.corrige_gabarito.java.model.Aluno;
-import com.example.corrige_gabarito.java.model.Usuario;
-import com.example.corrige_gabarito.java.service.AlunoService;
-import com.example.corrige_gabarito.java.service.DisciplinaService;
-import com.example.corrige_gabarito.java.service.UsuarioService;
+import com.example.corrige_gabarito.java.dto.ProvaAluno;
+import com.example.corrige_gabarito.java.model.*;
+import com.example.corrige_gabarito.java.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/aluno")
 public class AlunoController {
 
-    private final AlunoService alunoService;
     private final UsuarioService usuarioService;
+    private final AlunoService alunoService;
+    private final ProvaService provaService;
+    private final RespostaAlunoService respostaAlunoService;
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/listar")
@@ -65,7 +73,7 @@ public class AlunoController {
             model.addAttribute("message", "Aluno não encontrado");
         }
         model.addAttribute("alunos", alunoService.listarTodos());
-        model.addAttribute("usuarios", alunoService.listarUsuariosNaoAssociados());
+        model.addAttribute("usuarios", usuarioService.listarUsuariosPorRole("ALUNO"));
         return "aluno/lista";
     }
 
@@ -73,5 +81,73 @@ public class AlunoController {
     public String remover(@PathVariable Long id) {
         alunoService.deletarPorId(id);
         return "redirect:/aluno/listar";
+    }
+
+    @GetMapping("/minhas-provas")
+    public String listarProvasDoAluno(
+            @RequestParam(required = false) Long disciplinaId,
+            Model model,
+            Principal principal) {
+
+        // Buscar o aluno logado
+        Usuario usuario = usuarioService.buscarPorLogin(principal.getName());
+        Aluno aluno = alunoService.buscarPorUsuario(usuario);
+
+        // Buscar IDs das turmas do aluno
+        Set<Long> idsTurmas = aluno.getTurmas().stream()
+                .map(Turma::getId)
+                .collect(Collectors.toSet());
+
+        // Buscar todas as provas das turmas
+        List<Prova> todasAsProvas = provaService.buscarPorTurmas(idsTurmas);
+
+        // Buscar todas as disciplinas (antes de filtrar)
+        Set<Disciplina> disciplinas = todasAsProvas.stream()
+                .map(Prova::getDisciplina)
+                .collect(Collectors.toSet());
+
+        // Agora faz o filtro se o aluno escolheu uma disciplina
+        List<Prova> provasFiltradas = todasAsProvas;
+        if (disciplinaId != null) {
+            provasFiltradas = todasAsProvas.stream()
+                    .filter(p -> p.getDisciplina().getId().equals(disciplinaId))
+                    .collect(Collectors.toList());
+        }
+
+        // Ordenar por data: mais recente primeiro
+        provasFiltradas.sort((p1, p2) -> p2.getDataAplicacao().compareTo(p1.getDataAplicacao()));
+
+        // Buscar respostas do aluno
+        List<RespostaAluno> respostasDoAluno = respostaAlunoService.buscarPorAlunoId(aluno.getId());
+
+        // Calcular notas por prova
+        Map<Long, BigDecimal> notaPorProva = respostasDoAluno.stream()
+                .collect(Collectors.groupingBy(
+                        r -> r.getProva().getId(),
+                        Collectors.mapping(RespostaAluno::getValor, Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))
+                ));
+
+        List<ProvaAluno> provasComResultado = new ArrayList<>();
+        for (Prova prova : provasFiltradas) {
+            BigDecimal notaAluno = notaPorProva.getOrDefault(prova.getId(), null);
+            BigDecimal notaMaxima = provaService.calcularNotaMaxima(prova.getId());
+
+            ProvaAluno dto = new ProvaAluno();
+            dto.setId(prova.getId());
+            dto.setNome(prova.getNome());
+            dto.setData(prova.getDataAplicacao());
+            dto.setDisciplina(prova.getDisciplina());
+            dto.setTurma(prova.getTurma());
+            dto.setResultado(notaAluno != null ? notaAluno.doubleValue() : null);
+            dto.setNotaMaxima(notaMaxima != null ? notaMaxima.doubleValue() : null);
+
+            provasComResultado.add(dto);
+        }
+
+        model.addAttribute("disciplinas", disciplinas);
+        model.addAttribute("disciplinaSelecionadaId", disciplinaId);
+        model.addAttribute("provas", provasComResultado);
+
+        return "aluno/provas";
     }
 }

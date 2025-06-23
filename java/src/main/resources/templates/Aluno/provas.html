@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/layout :: head(paginaTitulo='Suas Provas')"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<header th:replace="fragments/layout :: cabecalho"></header>
+<main class="flex-shrink-0">
+    <div class="container-md mt-4">
+
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4">
+            <h2 class="mb-0">Minhas Provas</h2>
+
+            <form th:action="@{/aluno/minhas-provas}" method="get"
+                  class="d-flex flex-column flex-sm-row w-100 w-sm-auto mt-3 mt-sm-0 gap-2">
+                <select name="disciplinaId" class="form-select w-100 w-sm-auto">
+                    <option value="">Todas as Disciplinas</option>
+                    <option th:each="disciplina : ${disciplinas}"
+                            th:value="${disciplina.id}"
+                            th:text="${disciplina.nome}"
+                            th:selected="${disciplina.id == disciplinaSelecionadaId}">
+                    </option>
+                </select>
+                <button type="submit" class="btn btn-outline-primary w-100 w-sm-auto">
+                    <i class="bi bi-funnel"></i> Filtrar
+                </button>
+            </form>
+        </div>
+
+        <div class="list-group">
+
+            <div th:each="item : ${provas}" class="list-group-item list-group-item-action mb-3 shadow-sm rounded">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h5 class="mb-1">
+                        Prova: <span th:text="${item.nome}"></span>
+                    </h5>
+                    <div class="d-flex flex-column align-items-center">
+                        <small th:text="${#temporals.format(item.data, 'dd/MM/yyyy')}">Data da Prova</small>
+
+                        <!-- Chip com resultado -->
+                        <span th:if="${item.resultado != null}"
+                              class="badge bg-success mt-1">
+                            Nota: <span th:text="${#numbers.formatDecimal(item.resultado, 1, 1)}"></span> /
+                            <span th:text="${#numbers.formatDecimal(item.notaMaxima, 1, 1)}"></span>
+                        </span>
+                        <span th:if="${item.resultado == null}"
+                              class="badge bg-secondary mt-1">
+                            Não avaliado
+                        </span>
+                    </div>
+                </div>
+
+                <p class="mb-1 mt-2">
+                    <strong>Disciplina:</strong> <span th:text="${item.disciplina.nome}"></span><br>
+                    <strong>Turma:</strong> <span th:text="${item.turma.nome}"></span>
+                </p>
+            </div>
+
+        </div>
+
+        <a th:href="@{/}" class="btn btn-secondary mt-3">
+            <i class="bi bi-arrow-left"></i> Voltar ao Início
+        </a>
+
+    </div>
+</main>
+
+<footer th:replace="fragments/layout :: rodape"></footer>
+
+</body>
+</html>

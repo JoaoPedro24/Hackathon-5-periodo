@@ -30,9 +30,6 @@
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" th:href="@{/usuario/listar}">Usuários</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" th:href="@{'/professor/listar'}">Professores</a>
-                </li>
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">
                     <a class="nav-link" th:href="@{'/aluno/listar'}">Alunos</a>
                 </li>
@@ -41,6 +38,9 @@
                 </li>
                 <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">
                     <a class="nav-link" th:href="@{'/disciplina/listar'}">Disciplinas</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ALUNO')">
+                    <a class="nav-link" th:href="@{'aluno/minhas-provas'}">Minhas Provas</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{'/prova/listar'}">Provas</a>

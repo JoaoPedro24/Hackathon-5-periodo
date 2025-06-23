@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -20,9 +21,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter; // Injete o filtro JWT
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    private final AuthenticationSuccessHandler customSuccessHandler;
 
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,AuthenticationSuccessHandler customSuccessHandler, AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customSuccessHandler = customSuccessHandler;
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -64,7 +67,7 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
+                        .successHandler(customSuccessHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
