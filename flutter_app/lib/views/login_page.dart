@@ -104,22 +104,11 @@ class LoginPage extends StatelessWidget {
                                                 final userRole =
                                                     user.role.toUpperCase();
                                                 switch (userRole) {
-                                                  case 'ADMIN':
-                                                    Navigator.pushReplacementNamed(
-                                                      context,
-                                                      '/adminHome',
-                                                    );
-                                                    break;
+
                                                   case 'PROFESSOR':
                                                     Navigator.pushReplacementNamed(
                                                       context,
-                                                      '/professorHome',
-                                                    );
-                                                    break;
-                                                  case 'ALUNO':
-                                                    Navigator.pushReplacementNamed(
-                                                      context,
-                                                      '/alunoHome',
+                                                      '/home',
                                                     );
                                                     break;
                                                   default:

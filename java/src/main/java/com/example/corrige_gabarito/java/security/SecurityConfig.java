@@ -23,10 +23,11 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter; // Injete o filtro JWT
     private final AuthenticationSuccessHandler customSuccessHandler;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,AuthenticationSuccessHandler customSuccessHandler, AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationSuccessHandler customSuccessHandler, AuthenticationConfiguration authenticationConfiguration) throws Exception {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.customSuccessHandler = customSuccessHandler;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -47,13 +48,13 @@ public class SecurityConfig {
                         // Exemplo: .requestMatchers("/api/usuarios/**").hasRole("ADMIN") // Se /api/usuarios for apenas para admin
 
                         // 3. URLs específicas para PROFESSOR (mais restritivas que as gerais)
-                        .requestMatchers("/provas/**", "/gabaritos/**").hasRole("PROFESSOR")
+                        .requestMatchers("/provas/**", "/gabaritos/**").hasAnyRole("ADMIN, PROFESSOR")
                         // Adicione aqui qualquer outra URL /api/alguma_rota_de_professor que você tenha
                         // Exemplo: .requestMatchers("/api/disciplinas/**").hasRole("PROFESSOR")
 
                         // 4. URLs específicas para APIs que exigem roles específicas (antes da /api/** genérica)
                         // Esta é a regra de /api/provas que você já tinha, está no lugar correto agora em relação à /api/**
-                        .requestMatchers("/api/provas/**").permitAll() // Mantenha "ALUNO" se for o caso
+                        .requestMatchers("/api/provas/**").hasAnyRole("ADMIN", "PROFESSOR")
 
                         // 5. URLs para notas (também específica, mas para múltiplos perfis)
                         .requestMatchers("/notas/**").hasAnyRole("ALUNO", "ADMIN", "PROFESSOR")

@@ -4,14 +4,14 @@ class Questao {
   final String tipo;
   final double valor;
   final String enunciado;
-  final String respostaCorreta;
+  final String? respostaCorreta;
 
   Questao({
     required this.id,
     required this.tipo,
     required this.valor,
     required this.enunciado,
-    required this.respostaCorreta,
+    this.respostaCorreta,
   });
 
   factory Questao.fromJson(Map<String, dynamic> json) => Questao(
