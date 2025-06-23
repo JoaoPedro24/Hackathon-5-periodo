@@ -42,17 +42,17 @@
                 <td th:text="${prova.turma.nome}"></td>
                 <td th:text="${prova.professor.nome}"></td>
                 <td>
-                    <a th:if="${prova.dataAplicacao >= T(java.time.LocalDate).now()}"
+                    <a th:if="${prova.dataAplicacao <= T(java.time.LocalDate).now()}"
                        th:href="@{/prova/{id}/resultados(id=${prova.id})}" class="btn btn-success btn-sm">
                         Resultados
                     </a>
 
-                    <a th:if="${prova.dataAplicacao < T(java.time.LocalDate).now()}"
+                    <a th:if="${prova.dataAplicacao > T(java.time.LocalDate).now()}"
                        th:href="@{/prova/editar/{id}(id=${prova.id})}" class="btn btn-warning btn-sm">
                         Editar
                     </a>
 
-                    <a th:if="${prova.dataAplicacao < T(java.time.LocalDate).now()}" th:href="@{/prova/remover/{id}(id=${prova.id})}" class="btn btn-danger btn-sm"
+                    <a th:if="${prova.dataAplicacao > T(java.time.LocalDate).now()}" th:href="@{/prova/remover/{id}(id=${prova.id})}" class="btn btn-danger btn-sm"
                        onclick="return confirm('Tem certeza que deseja excluir esta prova?');">
                         <i class="bi bi-trash3-fill"></i> Excluir
                     </a>
