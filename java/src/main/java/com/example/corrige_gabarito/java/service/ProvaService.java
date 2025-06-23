@@ -6,6 +6,7 @@ import com.example.corrige_gabarito.java.repository.AlunoRepository;
 import com.example.corrige_gabarito.java.repository.ProvaRepository;
 import com.example.corrige_gabarito.java.repository.QuestaoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ public class ProvaService {
     private final AlunoRepository alunoRepository;
 
     public List<Prova> listarTodas() {
-        return provaRepository.findAll();
+        return provaRepository.findAll(Sort.by(Sort.Direction.DESC, "dataAplicacao"));
     }
 
     public void salvar(Prova prova) {
@@ -37,7 +38,7 @@ public class ProvaService {
     }
 
     public List<Prova> listarPorProfessorId(Long professorId) {
-        return provaRepository.findByProfessorId(professorId);
+        return provaRepository.findByProfessorId(professorId, Sort.by(Sort.Direction.DESC, "dataAplicacao"));
     }
 
     public List<Prova> buscarPorTurmas(Set<Long> idsTurmas) {
