@@ -150,10 +150,8 @@ public class ProvaController {
                     (int) questoesCertas
             ));
 
-            if (notaTotal.compareTo(BigDecimal.ZERO) > 0) {
-                somaNotas += notaTotal.doubleValue();
-                alunosCorrigidos++;
-            }
+            somaNotas += notaTotal.doubleValue();
+            alunosCorrigidos++;
         }
 
         double mediaTurma = alunosCorrigidos > 0 ? somaNotas / alunosCorrigidos : 0;
