@@ -42,8 +42,8 @@ public class SecurityConfig {
                         .requestMatchers("/aluno/minhas-provas**", "/respostas/**").hasAnyRole("ALUNO", "ADMIN")
                         .requestMatchers("/", "/banco/**", "/usuario/**", "/aluno/**","/disciplina/**","/turma/**").hasRole("ADMIN")
                         .requestMatchers("/prova/**").hasAnyRole("ADMIN","PROFESSOR")
-                        .requestMatchers("/api/provas/**").permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/provas/**")
+                        .requestMatchers("/api/**")
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login

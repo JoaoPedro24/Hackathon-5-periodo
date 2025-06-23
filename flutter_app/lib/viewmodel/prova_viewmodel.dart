@@ -9,6 +9,7 @@ class ProvaViewModel extends ChangeNotifier {
   bool _isLoading = false;
 
   List<ProvaModel> get provas => _provas;
+
   bool get isLoading => _isLoading;
 
   Future<void> carregarProvas() async {
@@ -16,8 +17,10 @@ class ProvaViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _provas = await _service.fetchProvas();
+      _provas =
+      await _service.fetchProvasProfessor(); // sempre chama a mesma rota
     } catch (e) {
+      print('Erro ao carregar provas: $e');
       _provas = [];
     }
 

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/theme_app.dart';
 import 'package:flutter_app/viewmodel/login_viewmodel.dart';
-import 'package:flutter_app/views/admin_home_page.dart';
 import 'package:flutter_app/views/home_page.dart';
 import 'package:flutter_app/views/login_page.dart';
 import 'package:flutter_app/views/nao_encontrado_page.dart';
-import 'package:flutter_app/views/professor_home_page.dart';
 import 'package:provider/provider.dart';
-
 import '../auth/widgets/auth_guard.dart';
+import '../viewmodel/prova_viewmodel.dart';
 import '../views/acesso_negado_page.dart';
 
 class MyAppf extends StatelessWidget {
@@ -18,7 +16,11 @@ class MyAppf extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => LoginViewModel())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => ProvaViewModel()),
+      ],
+
       child: MaterialApp(
         title: ('App Flutter x Spring Boot'),
         debugShowCheckedModeBanner: false,
@@ -26,15 +28,10 @@ class MyAppf extends StatelessWidget {
         initialRoute: '/login',
         routes: {
           '/login': (_) => LoginPage(),
-          '/home': (_) => const AuthGuard(protectedPage: HomePage()),
-          '/adminHome':
+
+          '/home':
               (_) => const AuthGuard(
-                protectedPage: AdminHomePage(),
-                allowedRoles: ['ADMIN'],
-              ),
-          '/professorHome':
-              (_) => const AuthGuard(
-                protectedPage: ProfessorHomePage(),
+                protectedPage: HomePage(),
                 allowedRoles: ['PROFESSOR'],
               ),
           '/acessoNegado': (_) => const AcessoNegadoPage(),
