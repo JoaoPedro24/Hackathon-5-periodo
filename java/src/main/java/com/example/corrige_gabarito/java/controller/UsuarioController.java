@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/usuario")
@@ -25,8 +27,16 @@ public class UsuarioController {
     }
 
     @GetMapping("/listar")
-    public String listar(Model model) {
-        model.addAttribute("usuarios", usuarioService.listarTodos());
+    public String listar(@RequestParam(required = false) String role, Model model) {
+        List<Usuario> usuarios;
+
+        if (role != null && !role.isEmpty()) {
+            usuarios = usuarioService.listarUsuariosPorRole(role);
+        } else {
+            usuarios = usuarioService.listarTodos();
+        }
+        model.addAttribute("role", role);
+        model.addAttribute("usuarios", usuarios);
         model.addAttribute("usuario", new Usuario());
         return "usuario/lista";
     }
