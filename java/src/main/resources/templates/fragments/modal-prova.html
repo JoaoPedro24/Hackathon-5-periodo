@@ -189,10 +189,9 @@
                                 </select>
                             </div>
                         </div>
+
                         <hr>
-                        <div id="mensagemErroValor" class="alert alert-danger d-none" role="alert">
-                            A soma dos valores das questões deve ser exatamente igual ao valor máximo da prova.
-                        </div>
+
                         <h6>Questões:</h6>
                         <div id="questoesContainer">
                             <div th:each="questao, indexStat : ${prova?.questoes}" class="border p-3 py-2 mb-3">
@@ -259,6 +258,10 @@
                         <button type="button" class="btn btn-outline-primary mt-2" onclick="adicionarQuestao()">
                             <i class="bi bi-plus-circle"></i> Adicionar
                         </button>
+
+                        <div id="mensagemErroValor" class="alert alert-danger d-none mt-2" role="alert">
+                            A soma dos valores das questões deve ser exatamente igual ao valor máximo da prova.
+                        </div>
 
                         <div class="modal-footer mt-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>

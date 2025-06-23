@@ -4,6 +4,7 @@ import com.example.corrige_gabarito.java.api.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -20,13 +21,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // Injete o filtro JWT
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationSuccessHandler customSuccessHandler;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,AuthenticationSuccessHandler customSuccessHandler, AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, AuthenticationSuccessHandler customSuccessHandler, AuthenticationConfiguration authenticationConfiguration) throws Exception {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.customSuccessHandler = customSuccessHandler;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -34,35 +36,14 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .headers(header -> header.frameOptions(config -> config.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. URLs totalmente públicas (sem autenticação)
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/images/**", "/css/**", "/error/**").permitAll()
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/aluno/**").permitAll() // Se esta rota também for pública (ou se for uma rota de registro de aluno)
-
-                        // 2. URLs específicas para ADMIN (as mais restritivas)
-                        .requestMatchers("/banco/**", "/usuario/**").hasRole("ADMIN")
-                        // Adicione aqui qualquer outra URL /api/alguma_rota_de_admin que você tenha
-                        // Exemplo: .requestMatchers("/api/admin/configuracoes/**").hasRole("ADMIN")
-                        // Exemplo: .requestMatchers("/api/usuarios/**").hasRole("ADMIN") // Se /api/usuarios for apenas para admin
-
-                        // 3. URLs específicas para PROFESSOR (mais restritivas que as gerais)
-                        .requestMatchers("/provas/**", "/gabaritos/**").hasRole("PROFESSOR")
-                        // Adicione aqui qualquer outra URL /api/alguma_rota_de_professor que você tenha
-                        // Exemplo: .requestMatchers("/api/disciplinas/**").hasRole("PROFESSOR")
-
-                        // 4. URLs específicas para APIs que exigem roles específicas (antes da /api/** genérica)
-                        // Esta é a regra de /api/provas que você já tinha, está no lugar correto agora em relação à /api/**
-                        .requestMatchers("/api/provas/**").permitAll() // Mantenha "ALUNO" se for o caso
-
-                        // 5. URLs para notas (também específica, mas para múltiplos perfis)
-                        .requestMatchers("/notas/**").hasAnyRole("ALUNO", "ADMIN", "PROFESSOR")
-
-                        // 6. A REGRA GENÉRICA PARA /API/** DEVE VIR POR ÚLTIMO ENTRE AS REGRAS DE API!
-                        // Ela vai capturar qualquer /api/ que NÃO tenha sido coberto pelas regras mais específicas acima.
-                        .requestMatchers("/api/**").permitAll() // Se houver APIs gerais para todos
-
-                        // 7. Qualquer outra requisição que não foi capturada acima, deve estar autenticada.
+                        .requestMatchers(HttpMethod.POST, "/aluno/**").hasAnyRole("ALUNO", "ADMIN")
+                        .requestMatchers("/aluno/minhas-provas**", "/respostas/**").hasAnyRole("ALUNO", "ADMIN")
+                        .requestMatchers("/", "/banco/**", "/usuario/**", "/aluno/**","/disciplina/**","/turma/**").hasRole("ADMIN")
+                        .requestMatchers("/prova/**").hasAnyRole("ADMIN","PROFESSOR")
+                        .requestMatchers("/api/provas/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -76,24 +57,34 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setContentType("application/json");
-                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.getWriter().write("{\"error\": \"Unauthorized\"}");
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            String acceptHeader = request.getHeader("Accept");
+                            String requestUri = request.getRequestURI();
+
+                            if (requestUri.startsWith("/api/") || (acceptHeader != null && acceptHeader.contains("application/json"))) {
+                                response.setContentType("application/json");
+                                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                                response.getWriter().write("{\"error\": \"Forbidden\"}");
+                            } else {
+                                response.sendRedirect("/403");
+                            }
                         })
-                        .defaultAuthenticationEntryPointFor(
-                                (request, response, authException) -> {
-                                    response.setContentType("application/json");
-                                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                                    response.getWriter().write("{\"error\": \"Unauthorized\"}");
-                                },
-                                request -> request.getRequestURI().startsWith("/auth/")
-                        )
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            String acceptHeader = request.getHeader("Accept");
+                            String requestUri = request.getRequestURI();
+
+                            if (requestUri.startsWith("/api/") || (acceptHeader != null && acceptHeader.contains("application/json"))) {
+                                response.setContentType("application/json");
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                response.getWriter().write("{\"error\": \"Unauthorized\"}");
+                            } else {
+                                response.sendRedirect("/login");
+                            }
+                        })
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,36 +1,48 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div th:fragment="modalAluno">
     <div class="modal fade" id="modalAluno" tabindex="-1" aria-labelledby="modalAlunoLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalAlunoLabel" th:text="${aluno?.id != null} ? 'Editar Aluno' : 'Novo Aluno'"></h5>
+                    <h5 class="modal-title" id="modalAlunoLabel"
+                        th:text="${aluno?.id != null} ? 'Editar Aluno' : 'Novo Aluno'"></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/aluno}" method="post">
-                        <input type="hidden" name="id" th:value="${aluno?.id}" />
+                        <input type="hidden" name="id" th:value="${aluno?.id}"/>
 
                         <div class="mb-3">
-                            <label for="usuario" class="form-label">Usuário:</label>
-                            <select id="usuario" name="usuario.id" class="form-select" required
-                                    th:disabled="${aluno?.id != null}">
-                                <option value="">Selecione um Usuário</option>
-                                <option th:each="users : ${usuarios}"
-                                        th:value="${users.id}"
-                                        th:selected="${aluno?.usuario?.id == users.id}"
-                                        th:text="${users.nome}"></option>
-                            </select>
-                            <input type="hidden" name="usuario.id" th:value="${aluno?.usuario?.id}" th:if="${aluno?.id != null}" />
+                            <label for="nome" class="form-label">Nome do Aluno:</label>
+                            <input type="text" class="form-control" id="nome" name="usuario.nome"
+                                   th:value="${aluno?.usuario?.nome}" required/>
                         </div>
 
                         <div class="mb-3">
-                            <label for="matricula" class="form-label">Matrícula</label>
+                            <label for="matricula" class="form-label">Matrícula:</label>
                             <input type="text" class="form-control" id="matricula" name="matricula"
-                                   th:value="${aluno?.matricula}" required />
+                                   th:value="${aluno?.matricula}" required
+                                   th:disabled="${#authorization.expression('hasRole(''ALUNO'')')}" />
+                            <input type="hidden" name="matricula" th:value="${aluno?.matricula}" sec:authorize="hasRole('ALUNO')" />
                         </div>
+
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Login:</label>
+                            <input type="text" class="form-control" id="login" name="usuario.login"
+                                   th:value="${aluno?.usuario?.login}" required/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Senha:</label>
+                            <input type="password" class="form-control" id="password" name="usuario.password"
+                                   th:required="${aluno?.usuario?.id == null}" />
+                            <small class="text-muted" th:if="${aluno?.usuario?.id != null}">Deixe em branco para manter a senha atual</small>
+                            <small id="passwordError" class="text-danger mt-1" style="display:none;">A senha deve ter no mínimo 6 caracteres, pelo menos um número e um caractere especial (!@#$%^&*).</small>
+                        </div>
+
+                        <input type="hidden" name="usuario.role" value="ALUNO"/>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -44,6 +56,32 @@
             </div>
         </div>
     </div>
+
+    <!-- Validação JS da Senha -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('#modalAluno form');
+            const passwordInput = document.getElementById('password');
+            const passwordError = document.getElementById('passwordError');
+            const isNewUser = /*[[${aluno?.usuario?.id == null}]]*/ false;  // Thymeleaf irá substituir true/false
+
+            form.addEventListener('submit', function(e) {
+                const senha = passwordInput.value;
+                const regex = /^(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
+
+                // Só valida se for novo usuário ou se o campo senha estiver preenchido
+                if (isNewUser || senha.length > 0) {
+                    if (!regex.test(senha)) {
+                        e.preventDefault();
+                        passwordError.style.display = 'block';
+                        return;
+                    } else {
+                        passwordError.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
 </div>
 </body>
 </html>

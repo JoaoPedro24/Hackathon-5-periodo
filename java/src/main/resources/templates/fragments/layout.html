@@ -30,20 +30,21 @@
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" th:href="@{/usuario/listar}">Usuários</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN')">
                     <a class="nav-link" th:href="@{'/aluno/listar'}">Alunos</a>
                 </li>
-                <li class="nav-item"  sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">
+                <li class="nav-item"  sec:authorize="hasAnyRole('ADMIN')">
                     <a class="nav-link" th:href="@{'/turma/listar'}">Turmas</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN')">
                     <a class="nav-link" th:href="@{'/disciplina/listar'}">Disciplinas</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasRole('ALUNO')">
-                    <a class="nav-link" th:href="@{'aluno/minhas-provas'}">Minhas Provas</a>
-                </li>
-                <li class="nav-item">
+                <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'PROFESSOR')">
                     <a class="nav-link" th:href="@{'/prova/listar'}">Provas</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ALUNO')">
+                    <a class="nav-link text-light" th:href="@{'aluno/minhas-provas'}" data-bs-toggle="modal" data-bs-target="#modalAluno"><i class="bi bi-gear"></i>
+                        Configurações</a>
                 </li>
             </ul>
             <div class="ms-auto">
@@ -77,16 +78,12 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const currentPath = window.location.pathname;
-            // Pega a primeira parte do caminho (ex: '/usuario' de '/usuario/listar')
             const firstPathSegment = currentPath.split('/')[1];
             
             if (firstPathSegment) {
                 const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
                 navLinks.forEach(link => {
-                    // Remove a classe 'active' de todos os links
                     link.classList.remove('active');
-                    
-                    // Verifica se o href do link contém o segmento do caminho
                     const linkPath = link.getAttribute('href');
                     if (linkPath && linkPath.includes(`/${firstPathSegment}`)) {
                         link.classList.add('active');

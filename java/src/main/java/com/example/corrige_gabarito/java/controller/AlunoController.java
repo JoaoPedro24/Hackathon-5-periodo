@@ -3,6 +3,7 @@ package com.example.corrige_gabarito.java.controller;
 import com.example.corrige_gabarito.java.dto.ProvaAluno;
 import com.example.corrige_gabarito.java.model.*;
 import com.example.corrige_gabarito.java.service.*;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -32,36 +33,64 @@ public class AlunoController {
 
     @GetMapping("/listar")
     public String listar(Model model) {
-        model.addAttribute("usuarios", alunoService.listarUsuariosNaoAssociados());
         model.addAttribute("alunos", alunoService.listarTodos());
         return "aluno/lista";
     }
 
     @PostMapping
-    public String salvar(@ModelAttribute Aluno aluno, Model model) {
-        return salvarOuAtualizar(aluno, model);
+    public String salvar(@ModelAttribute Aluno aluno, Model model,Principal principal) {
+        return salvarOuAtualizar(aluno, model, principal);
     }
 
-    private String salvarOuAtualizar(Aluno aluno, Model model) {
+    private String salvarOuAtualizar(Aluno aluno, Model model, Principal principal) {
+        Usuario usuarioLogado = usuarioService.buscarPorLogin(principal.getName());
         try {
-            if (aluno.getUsuario() != null && aluno.getUsuario().getId() != null) {
-                Usuario usuario = usuarioService.buscarPorId(aluno.getUsuario().getId());
-                aluno.setUsuario(usuario);
+            if (aluno.getId() != null) {
+                Aluno alunoExistente = alunoService.buscarPorId(aluno.getId());
+                if (alunoExistente != null) {
+                    alunoExistente.setMatricula(aluno.getMatricula());
+                    Usuario usuarioExistente = alunoExistente.getUsuario();
+                    Usuario usuarioForm = aluno.getUsuario();
+
+                    if (usuarioForm != null && usuarioExistente != null) {
+                        usuarioExistente.setNome(usuarioForm.getNome());
+                        usuarioExistente.setLogin(usuarioForm.getLogin());
+                        if (usuarioForm.getPassword() != null && !usuarioForm.getPassword().isEmpty()) {
+                            String senhaCriptografada = passwordEncoder.encode(usuarioForm.getPassword());
+                            usuarioExistente.setPassword(senhaCriptografada);
+                        }
+                        usuarioExistente.setRole("ALUNO");
+                        usuarioService.salvar(usuarioExistente);
+                    }
+                    alunoService.salvar(alunoExistente);
+                }
+            } else {
+                Usuario novoUsuario = aluno.getUsuario();
+                if (novoUsuario != null) {
+                    novoUsuario.setRole("ALUNO");
+                    String senhaCriptografada = passwordEncoder.encode(novoUsuario.getPassword());
+                    novoUsuario.setPassword(senhaCriptografada);
+                    usuarioService.salvar(novoUsuario);
+                    aluno.setUsuario(novoUsuario);
+                }
+                alunoService.salvar(aluno);
             }
 
-            if (aluno.getUsuario() != null && aluno.getUsuario().getId() != null) {
-                Usuario usuario = usuarioService.buscarPorId(aluno.getUsuario().getId());
-                aluno.setUsuario(usuario);
+            if ("ALUNO".equalsIgnoreCase(usuarioLogado.getRole())) {
+                return "redirect:/aluno/minhas-provas";
+            } else {
+                return "redirect:/aluno/listar";
             }
-
-            alunoService.salvar(aluno);
-            return "redirect:/aluno/listar";
 
         } catch (Exception e) {
             model.addAttribute("message", "Não foi possível salvar o aluno: " + e.getMessage());
+            model.addAttribute("aluno", aluno);
             model.addAttribute("alunos", alunoService.listarTodos());
-            model.addAttribute("usuarios", alunoService.listarUsuariosNaoAssociados());
-            return "aluno/lista";
+            if ("ALUNO".equalsIgnoreCase(usuarioLogado.getRole())) {
+                return "aluno/provas";
+            } else {
+                return "aluno/listar";
+            }
         }
     }
 
@@ -75,7 +104,6 @@ public class AlunoController {
             model.addAttribute("message", "Aluno não encontrado");
         }
         model.addAttribute("alunos", alunoService.listarTodos());
-        model.addAttribute("usuarios", usuarioService.listarUsuariosPorRole("ALUNO"));
         return "aluno/lista";
     }
 
@@ -92,7 +120,6 @@ public class AlunoController {
         }
 
         model.addAttribute("alunos", alunoService.listarTodos());
-        model.addAttribute("usuarios", alunoService.listarUsuariosNaoAssociados());
         return "aluno/lista";
     }
 
@@ -142,6 +169,7 @@ public class AlunoController {
                 ));
 
         List<ProvaAluno> provasComResultado = new ArrayList<>();
+
         for (Prova prova : provasFiltradas) {
             BigDecimal notaAluno = notaPorProva.getOrDefault(prova.getId(), null);
             BigDecimal notaMaxima = provaService.calcularNotaMaxima(prova.getId());
@@ -161,6 +189,7 @@ public class AlunoController {
         model.addAttribute("disciplinas", disciplinas);
         model.addAttribute("disciplinaSelecionadaId", disciplinaId);
         model.addAttribute("provas", provasComResultado);
+        model.addAttribute("aluno", aluno);
         return "aluno/provas";
     }
 
@@ -176,8 +205,6 @@ public class AlunoController {
 
         // Buscar todas as respostas desse aluno para a prova
         List<RespostaAluno> respostas = respostaAlunoService.buscarPorAlunoEProva(aluno.getId(), provaId);
-        System.out.println(respostas);
-        System.out.println("AQUI FOIIII");
 
         model.addAttribute("respostas", respostas);
         model.addAttribute("provaId", provaId);
