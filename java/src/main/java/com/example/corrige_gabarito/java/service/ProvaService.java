@@ -1,6 +1,8 @@
 package com.example.corrige_gabarito.java.service;
 
+import com.example.corrige_gabarito.java.model.Aluno;
 import com.example.corrige_gabarito.java.model.Prova;
+import com.example.corrige_gabarito.java.repository.AlunoRepository;
 import com.example.corrige_gabarito.java.repository.ProvaRepository;
 import com.example.corrige_gabarito.java.repository.QuestaoRepository;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ public class ProvaService {
 
     private final ProvaRepository provaRepository;
     private final QuestaoRepository questaoRepository;
+    private final AlunoRepository alunoRepository;
 
     public List<Prova> listarTodas() {
         return provaRepository.findAll();
@@ -45,5 +48,7 @@ public class ProvaService {
         return questaoRepository.somarValorTotalDaProva(provaId);
     }
 
-
+    public List<Aluno> buscarAlunosPorProva(Long provaId) {
+        return alunoRepository.buscarAlunosPorProva(provaId);
+    }
 }

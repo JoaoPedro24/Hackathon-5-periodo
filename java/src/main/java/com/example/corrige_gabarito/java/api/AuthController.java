@@ -38,11 +38,13 @@ public class AuthController {
             Usuario usuario = (Usuario) authentication.getPrincipal();
             String token = jwtTokenProvider.generateToken(authentication);
 
-            return ResponseEntity.ok(new AuthResponse(token, usuario.getRole().toUpperCase())); // Ou .toLowerCase()
+            // AGORA envia também a role no JSON
+            return ResponseEntity.ok(new AuthResponse(token, usuario.getLogin(), usuario.getNome(), usuario.getRole()));
+
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login inválido");
         } catch (Exception e) {
-            e.printStackTrace(); // ⛳ VEJA O LOG NO CONSOLE
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno");
         }
     }
