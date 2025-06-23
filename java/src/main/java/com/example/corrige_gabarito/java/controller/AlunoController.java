@@ -4,6 +4,8 @@ import com.example.corrige_gabarito.java.dto.ProvaAluno;
 import com.example.corrige_gabarito.java.model.*;
 import com.example.corrige_gabarito.java.service.*;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -78,10 +80,22 @@ public class AlunoController {
     }
 
     @GetMapping("/remover/{id}")
-    public String remover(@PathVariable Long id) {
-        alunoService.deletarPorId(id);
-        return "redirect:/aluno/listar";
+    public String remover(@PathVariable Long id, Model model) {
+        try {
+            alunoService.deletarPorId(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Erro: Não é possível excluir o aluno, pois existem registros vinculados (respostas, turmas ou outras entidades).");
+        } catch (EmptyResultDataAccessException e) {
+            model.addAttribute("message", "Erro: Aluno com o ID informado não encontrado.");
+        } catch (Exception e) {
+            model.addAttribute("message", "Erro inesperado ao tentar excluir o aluno: " + e.getMessage());
+        }
+
+        model.addAttribute("alunos", alunoService.listarTodos());
+        model.addAttribute("usuarios", alunoService.listarUsuariosNaoAssociados());
+        return "aluno/lista";
     }
+
 
     @GetMapping("/minhas-provas")
     public String listarProvasDoAluno(

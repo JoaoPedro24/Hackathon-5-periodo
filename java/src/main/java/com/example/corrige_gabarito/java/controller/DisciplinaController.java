@@ -7,6 +7,8 @@ import com.example.corrige_gabarito.java.service.DisciplinaService;
 import com.example.corrige_gabarito.java.service.ProfessorService;
 import com.example.corrige_gabarito.java.service.UsuarioService;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -71,8 +73,19 @@ public class DisciplinaController {
     }
 
     @GetMapping("/remover/{id}")
-    public String remover(@PathVariable Long id) {
-        disciplinaService.deletarPorId(id);
-        return "redirect:/disciplina/listar";
+    public String remover(@PathVariable Long id, Model model) {
+        try {
+            disciplinaService.deletarPorId(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Erro: Não é possível excluir a disciplina, pois ela está vinculada a provas ou outras entidades.");
+        } catch (EmptyResultDataAccessException e) {
+            model.addAttribute("message", "Erro: Disciplina com o ID informado não encontrada.");
+        } catch (Exception e) {
+            model.addAttribute("message", "Erro inesperado ao tentar excluir a disciplina: " + e.getMessage());
+        }
+
+        model.addAttribute("disciplinas", disciplinaService.listarTodos());
+        model.addAttribute("professores", usuarioService.listarUsuariosPorRole("PROFESSOR"));
+        return "disciplina/lista";
     }
 }
