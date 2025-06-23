@@ -5,7 +5,6 @@ import com.example.corrige_gabarito.java.model.Prova;
 import com.example.corrige_gabarito.java.model.Questao;
 import com.example.corrige_gabarito.java.service.ProvaService;
 import com.example.corrige_gabarito.java.service.UsuarioService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -8,6 +8,7 @@ import lombok.Setter;
 import jakarta.persistence.CascadeType;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,8 +31,6 @@ public class Aluno {
     @ManyToMany(mappedBy = "alunos")
     private Set<Turma> turmas = new HashSet<>();
 
-    // Para garantir que Set funciona corretamente, implementamos equals e hashCode baseado no ID
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,4 +45,8 @@ public class Aluno {
     }
 
     private String matricula;
+
+    @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RespostaAluno> respostas;
+
 }
