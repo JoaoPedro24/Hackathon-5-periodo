@@ -20,4 +20,9 @@ public class RespostaAlunoService {
     public List<RespostaAluno> buscarPorAlunoId(Long id) {
         return respostaAlunoRepository.findByAlunoId(id);
     }
+
+    public List<RespostaAluno> buscarPorAlunoEProva(Long alunoId, Long provaId) {
+        return respostaAlunoRepository.findByAlunoIdAndProvaId(alunoId, provaId);
+    }
+
 }

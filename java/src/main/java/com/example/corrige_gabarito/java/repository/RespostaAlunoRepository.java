@@ -10,6 +10,4 @@ public interface RespostaAlunoRepository extends JpaRepository<RespostaAluno, Lo
     List<RespostaAluno> findByAlunoIdAndProvaId(Long alunoId, Long provaId);
     List<RespostaAluno> findByProvaId(Long provaId);
     List<RespostaAluno> findByAlunoId(Long alunoId);
-
-
 }

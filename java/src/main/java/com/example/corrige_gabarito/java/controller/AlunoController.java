@@ -161,7 +161,26 @@ public class AlunoController {
         model.addAttribute("disciplinas", disciplinas);
         model.addAttribute("disciplinaSelecionadaId", disciplinaId);
         model.addAttribute("provas", provasComResultado);
-
         return "aluno/provas";
+    }
+
+    @GetMapping("/respostas/prova/{id}")
+    public String listarQuestoesDoAluno(
+            @PathVariable("id") Long provaId,
+            Model model,
+            Principal principal) {
+
+        // Buscar utilizador logado
+        Usuario usuario = usuarioService.buscarPorLogin(principal.getName());
+        Aluno aluno = alunoService.buscarPorUsuario(usuario);
+
+        // Buscar todas as respostas desse aluno para a prova
+        List<RespostaAluno> respostas = respostaAlunoService.buscarPorAlunoEProva(aluno.getId(), provaId);
+        System.out.println(respostas);
+        System.out.println("AQUI FOIIII");
+
+        model.addAttribute("respostas", respostas);
+        model.addAttribute("provaId", provaId);
+        return "aluno/respostas";
     }
 }
