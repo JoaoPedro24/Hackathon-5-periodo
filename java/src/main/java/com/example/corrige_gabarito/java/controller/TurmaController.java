@@ -8,6 +8,8 @@ import com.example.corrige_gabarito.java.service.TurmaService;
 import com.example.corrige_gabarito.java.service.UsuarioService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +70,22 @@ public class TurmaController {
         }
         turmaService.salvarTurmaComAlunos(turma, alunosIds);
         return "redirect:/turma/listar"; // redireciona para lista de turmas ou outra página
+    }
+
+    @GetMapping("/remover/{id}")
+    public String remover(@PathVariable Long id, Model model) {
+        try {
+            turmaService.deletarTurma(id);
+        } catch (DataIntegrityViolationException e) {
+            model.addAttribute("message", "Erro: Não é possível excluir essa turma, pois existem registros vinculados (alunos, disciplinas ou professores).");
+        } catch (EmptyResultDataAccessException e) {
+            model.addAttribute("message", "Erro: Turma com o ID informado não encontrado.");
+        } catch (Exception e) {
+            model.addAttribute("message", "Erro inesperado ao tentar excluir a turma: " + e.getMessage());
+        }
+
+        model.addAttribute("turma", turmaService.listarTodas());
+        return "redirect:/turma/listar";
     }
 
     /**
