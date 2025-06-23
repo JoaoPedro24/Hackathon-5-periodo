@@ -30,17 +30,12 @@ public class ProvaApiController {
     @GetMapping
     public ResponseEntity<List<ProvaDto>> listarMinhasProvas(Principal principal) {
         String login = principal.getName();
-        System.out.println("🔐 Professor logado (login): " + login);
-
         Usuario professor = usuarioService.buscarPorLogin(login);
-        System.out.println("🧑‍🏫 Professor encontrado (ID): " + professor.getId());
 
         List<Prova> provas = provaService.listarPorProfessorId(professor.getId());
-        System.out.println("📚 Provas encontradas: " + provas.size());
-
         List<ProvaDto> dtos = provas.stream()
                 .map(this::converterParaDTO)
-                .toList();
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(dtos);
     }
@@ -87,24 +82,23 @@ public class ProvaApiController {
 
     // Converter Prova para DTO (com as questões)
     private ProvaDto converterParaDTO(Prova prova) {
+        List<Aluno> alunosDaProva = provaService.buscarAlunosPorProva(prova.getId());
+        int totalAlunos = alunosDaProva.size();
+
+        List<RespostaAluno> respostas = respostaAlunoService.buscarPorProvaId(prova.getId());
+        long totalCorrigidos = respostas.stream()
+                .map(r -> r.getAluno().getId())
+                .distinct()
+                .count();
+
         return ProvaDto.builder()
                 .id(prova.getId())
                 .nome(prova.getNome())
                 .valorTotal(prova.getValorTotal())
                 .disciplina(prova.getDisciplina() != null ? prova.getDisciplina().getNome() : null)
                 .turma(prova.getTurma() != null ? prova.getTurma().getNome() : null)
-                .questoes(prova.getQuestoes().stream()
-                        .map(this::converterQuestaoParaDTO)
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    private ProvaDto.QuestaoDTO converterQuestaoParaDTO(Questao questao) {
-        return ProvaDto.QuestaoDTO.builder()
-                .id(questao.getId())
-                .tipo(questao.getTipo().name())
-                .valor(questao.getValor())
-                .enunciado(questao.getEnunciado())
+                .totalAlunos(totalAlunos)
+                .totalAlunosCorrigidos((int) totalCorrigidos)
                 .build();
     }
 

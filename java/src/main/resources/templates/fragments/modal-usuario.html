@@ -27,7 +27,7 @@
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Senha:</label>
-                            <input type="password" class="form-control" id="password" name="usuario.password"
+                            <input type="password" class="form-control" id="password" name="password"
                                    th:required="${usuario?.id == null}" />
                             <small class="text-muted" th:if="${usuario?.id != null}">Deixe em branco para manter a senha atual</small>
                             <small id="passwordError" class="text-danger mt-1" style="display:none;">A senha deve ter no mínimo 6 caracteres, pelo menos um número e um caractere especial (!@#$%^&*).</small>
@@ -60,7 +60,7 @@
             const form = document.querySelector('#modalUsuario form');
             const passwordInput = document.getElementById('password');
             const passwordError = document.getElementById('passwordError');
-            const isNewUser = /*[[${usuario?.id == null}]]*/ false;  // Thymeleaf irá substituir true/false
+            const isNewUser = /*[[${usuario?.id == null}]]*/ false;
 
             form.addEventListener('submit', function(e) {
                 const senha = passwordInput.value;
