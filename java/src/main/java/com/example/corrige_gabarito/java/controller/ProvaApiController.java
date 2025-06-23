@@ -118,7 +118,6 @@ public class ProvaApiController {
 
         Prova prova = provaService.buscarPorId(provaId);
 
-
         List<QuestaoComRespostaDTO> questoesComRespostas = questaoService.listarQuestoesComRespostasDoAluno(provaId);
 
         return ResponseEntity.ok(questoesComRespostas);

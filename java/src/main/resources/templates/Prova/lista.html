@@ -12,7 +12,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">Lista de Provas</h2>
             <!-- Botão abre modal vazio para nova prova -->
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProva">
+            <a sec:authorize="hasRole('PROFESSOR')" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalProva">
                 <i class="bi bi-plus-circle"></i> Nova Prova
             </a>
         </div>
@@ -29,7 +29,7 @@
                 <th>Nome</th>
                 <th>Disciplina</th>
                 <th>Turma</th>
-                <th>Professor</th>
+                <th sec:authorize="hasRole('ADMIN')">Professor</th>
                 <th>Ações</th>
             </tr>
             </thead>
@@ -40,7 +40,7 @@
                 <td th:text="${prova.nome}"></td>
                 <td th:text="${prova.disciplina.nome}"></td>
                 <td th:text="${prova.turma.nome}"></td>
-                <td th:text="${prova.professor.nome}"></td>
+                <td sec:authorize="hasRole('ADMIN')" th:text="${prova.professor.nome}"></td>
                 <td>
                     <a th:if="${prova.dataAplicacao <= T(java.time.LocalDate).now()}"
                        th:href="@{/prova/{id}/resultados(id=${prova.id})}" class="btn btn-success btn-sm">

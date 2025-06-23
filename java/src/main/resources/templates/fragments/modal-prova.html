@@ -75,10 +75,20 @@
                 .map(input => parseFloat(input.value) || 0);
             const soma = valores.reduce((a, b) => a + b, 0);
 
-            if (soma > valorTotal) {
-                alert('⚠️ A soma dos valores das questões ultrapassou o valor máximo da prova!');
+            const mensagemErro = document.getElementById('mensagemErroValor');
+            const botaoSalvar = document.getElementById('botaoSalvar');
+
+            if (soma !== valorTotal) {
+                mensagemErro.classList.remove('d-none');
+                mensagemErro.innerText = `⚠️ A soma dos valores das questões (${soma.toFixed(2)}) deve ser exatamente igual ao valor máximo da prova (${valorTotal.toFixed(2)}).`;
+                botaoSalvar.disabled = true;
+            } else {
+                mensagemErro.classList.add('d-none');
+                mensagemErro.innerText = '';
+                botaoSalvar.disabled = false;
             }
         }
+
 
         function reordenarQuestoes() {
             const container = document.getElementById('questoesContainer');
@@ -136,6 +146,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
+
                     <form th:action="@{/prova}" method="post">
                         <input type="hidden" name="id" th:value="${prova?.id}"/>
                         <div class="mb-3">
@@ -178,8 +189,10 @@
                                 </select>
                             </div>
                         </div>
-
                         <hr>
+                        <div id="mensagemErroValor" class="alert alert-danger d-none" role="alert">
+                            A soma dos valores das questões deve ser exatamente igual ao valor máximo da prova.
+                        </div>
                         <h6>Questões:</h6>
                         <div id="questoesContainer">
                             <div th:each="questao, indexStat : ${prova?.questoes}" class="border p-3 py-2 mb-3">
@@ -249,7 +262,7 @@
 
                         <div class="modal-footer mt-3">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary"  id="botaoSalvar">
                                 <span th:text="${prova?.id != null} ? 'Atualizar' : 'Salvar'"></span>
                             </button>
                         </div>
