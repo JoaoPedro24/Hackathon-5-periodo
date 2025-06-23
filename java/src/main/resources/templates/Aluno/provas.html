@@ -21,7 +21,7 @@
                             th:selected="${disciplina.id == disciplinaSelecionadaId}">
                     </option>
                 </select>
-                <button type="submit" class="btn btn-outline-primary w-100 w-sm-auto">
+                <button type="submit" class="btn btn-outline-primary w-50 w-sm-auto">
                     <i class="bi bi-funnel"></i> Filtrar
                 </button>
             </form>
@@ -59,6 +59,7 @@
             </div>
         </div>
     </div>
+    <div th:replace="fragments/modal-aluno :: modalAluno"></div>
 </main>
 
 <footer th:replace="fragments/layout :: rodape"></footer>

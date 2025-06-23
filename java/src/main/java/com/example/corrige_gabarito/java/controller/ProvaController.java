@@ -101,9 +101,6 @@ public class ProvaController {
                 prova.getQuestoes().forEach(q -> q.setProva(prova));
             }
 
-            System.out.println(prova);
-            System.out.println(prova.getQuestoes());
-
             provaService.salvar(prova);
             return "redirect:/prova/listar";
 
