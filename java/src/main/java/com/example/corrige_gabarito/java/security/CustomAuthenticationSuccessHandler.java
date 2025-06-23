@@ -26,9 +26,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         if (isAluno) {
             response.sendRedirect(request.getContextPath() + "/aluno/minhas-provas");
         } else if (isProfessor) {
-            response.sendRedirect(request.getContextPath() + "/provas");
+            response.sendRedirect(request.getContextPath() + "/prova/listar");
         } else if (isAdmin) {
-            response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+            response.sendRedirect(request.getContextPath() + "/");
         } else {
             response.sendRedirect(request.getContextPath() + "/");
         }

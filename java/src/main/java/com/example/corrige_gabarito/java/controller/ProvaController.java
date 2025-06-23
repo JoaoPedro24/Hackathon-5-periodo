@@ -33,7 +33,16 @@ public class ProvaController {
         Usuario professor = usuarioService.buscarPorLogin(principal.getName());
         List<Disciplina> disciplinasDoProfessor = disciplinaService.listarPorProfessor(professor);
 
-        model.addAttribute("provas", provaService.listarTodas());
+        List<Prova> provas;
+        if (professor.getRole().contains("PROFESSOR")) {
+            // Se for professor, lista apenas as provas dele
+            provas = provaService.listarPorProfessorId(professor.getId());
+        } else {
+            // Se for outro tipo (admin, etc), lista todas as provas
+            provas = provaService.listarTodas();
+        }
+
+        model.addAttribute("provas", provas);
         model.addAttribute("prova", new Prova());
         model.addAttribute("disciplinas", disciplinasDoProfessor);
         model.addAttribute("turmas", turmaService.listarTodas());
@@ -55,13 +64,20 @@ public class ProvaController {
             return "redirect:/prova/listar";
         }
 
+        List<Prova> provas;
+        if (professor.getRole().contains("PROFESSOR")) {
+            provas = provaService.listarPorProfessorId(professor.getId());
+        } else {
+            provas = provaService.listarTodas();
+        }
+
         List<Disciplina> disciplinasDoProfessor = disciplinaService.listarPorProfessor(professor);
         List<Turma> turmas = turmaService.listarTodas();
 
         model.addAttribute("prova", prova);
         model.addAttribute("disciplinas", disciplinasDoProfessor);
         model.addAttribute("turmas", turmas);
-        model.addAttribute("provas", provaService.listarTodas());
+        model.addAttribute("provas", provas);
 
         return "prova/lista";
     }
