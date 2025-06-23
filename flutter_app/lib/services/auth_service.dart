@@ -31,7 +31,9 @@ class AuthService {
         final usuario = Usuario.fromJson(data); // ✅ instância criada aqui
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', usuario.token);
-        await prefs.setString('usuario_nome', usuario.username);
+        await prefs.setString('usuario_nome', usuario.nome);
+        await prefs.setString('usuario_role', usuario.role);
+
         await AuthHelper.saveToken(usuario.token); // ✅ agora pode usar
 
         return usuario;

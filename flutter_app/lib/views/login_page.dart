@@ -72,7 +72,8 @@ class LoginPage extends StatelessWidget {
                                 loginController: _loginController,
                                 passwordController: _passwordController,
                                 obscurePassword: viewModel.obscurePassword,
-                                onToggleObscure: viewModel.toggleObscurePassword,
+                                onToggleObscure:
+                                    viewModel.toggleObscurePassword,
                               ),
                               const SizedBox(height: 32),
                               if (viewModel.errorMessage != null)
@@ -87,68 +88,80 @@ class LoginPage extends StatelessWidget {
                                 width: double.infinity,
                                 height: 50,
                                 child: ElevatedButton.icon(
-                                  onPressed: viewModel.isLoading
-                                      ? null
-                                      : () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      final user = await viewModel.fazerLogin(
-                                        _loginController.text.trim(),
-                                        _passwordController.text,
-                                      );
-                                      if (user != null) {
-                                        final userRole = user.username.toUpperCase();
-                                        switch (userRole) {
-                                          case 'ADMIN':
-                                            Navigator.pushReplacementNamed(
-                                              context,
-                                              '/adminHome',
-                                            );
-                                            break;
-                                          case 'PROFESSOR':
-                                            Navigator.pushReplacementNamed(
-                                              context,
-                                              '/professorHome',
-                                            );
-                                            break;
-                                          case 'ALUNO':
-                                            Navigator.pushReplacementNamed(
-                                              context,
-                                              '/alunoHome',
-                                            );
-                                            break;
-                                          default:
-                                            print('Role desconhecido recebido: ${user.username}');
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Erro: Tipo de usuário desconhecido. Contate o suporte.',
-                                                ),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            );
-                                            break;
-                                        }
-                                      }
-                                    }
-                                  },
+                                  onPressed:
+                                      viewModel.isLoading
+                                          ? null
+                                          : () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              final user = await viewModel
+                                                  .fazerLogin(
+                                                    _loginController.text
+                                                        .trim(),
+                                                    _passwordController.text,
+                                                  );
+                                              if (user != null) {
+                                                final userRole =
+                                                    user.role.toUpperCase();
+                                                switch (userRole) {
+                                                  case 'ADMIN':
+                                                    Navigator.pushReplacementNamed(
+                                                      context,
+                                                      '/adminHome',
+                                                    );
+                                                    break;
+                                                  case 'PROFESSOR':
+                                                    Navigator.pushReplacementNamed(
+                                                      context,
+                                                      '/professorHome',
+                                                    );
+                                                    break;
+                                                  case 'ALUNO':
+                                                    Navigator.pushReplacementNamed(
+                                                      context,
+                                                      '/alunoHome',
+                                                    );
+                                                    break;
+                                                  default:
+                                                    print(
+                                                      'Role desconhecida recebida: ${userRole}',
+                                                    );
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          'Erro: Tipo de usuário desconhecido. Contate o suporte.',
+                                                        ),
+                                                        backgroundColor:
+                                                            Colors.red,
+                                                      ),
+                                                    );
+                                                    break;
+                                                }
+                                              }
+                                            }
+                                          },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Theme.of(context).primaryColor,
+                                    backgroundColor:
+                                        Theme.of(context).primaryColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     elevation: 4,
                                     shadowColor: Colors.black26,
                                   ),
-                                  icon: viewModel.isLoading
-                                      ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                      : const Icon(Icons.login),
+                                  icon:
+                                      viewModel.isLoading
+                                          ? const SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                          : const Icon(Icons.login),
                                   label: const Text(
                                     'Entrar',
                                     style: TextStyle(

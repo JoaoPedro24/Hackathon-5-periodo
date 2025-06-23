@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/theme_app.dart';
 import 'package:flutter_app/viewmodel/login_viewmodel.dart';
 import 'package:flutter_app/views/admin_home_page.dart';
-import 'package:flutter_app/views/aluno_home_page.dart';
 import 'package:flutter_app/views/home_page.dart';
 import 'package:flutter_app/views/login_page.dart';
+import 'package:flutter_app/views/nao_encontrado_page.dart';
 import 'package:flutter_app/views/professor_home_page.dart';
 import 'package:provider/provider.dart';
 
-import '../views/provas/provas_page.dart';
+import '../auth/widgets/auth_guard.dart';
+import '../views/acesso_negado_page.dart';
 
 class MyAppf extends StatelessWidget {
   const MyAppf({super.key});
@@ -25,13 +26,27 @@ class MyAppf extends StatelessWidget {
         initialRoute: '/login',
         routes: {
           '/login': (_) => LoginPage(),
-          '/home': (_) => HomePage(),
-          '/adminHome': (context) => AdminHomePage(),
-          // <--- ADICIONE ESTA LINHA
-          '/professorHome': (context) => ProfessorHomePage(),
-          // <--- ADICIONE ESTA LINHA
-          '/alunoHome': (context) => AlunoHomePage(),
-          '/provas': (context) => ProvasPage(),
+          '/home': (_) => const AuthGuard(protectedPage: HomePage()),
+          '/adminHome':
+              (_) => const AuthGuard(
+                protectedPage: AdminHomePage(),
+                allowedRoles: ['ADMIN'],
+              ),
+          '/professorHome':
+              (_) => const AuthGuard(
+                protectedPage: ProfessorHomePage(),
+                allowedRoles: ['PROFESSOR'],
+              ),
+          '/acessoNegado': (_) => const AcessoNegadoPage(),
+        },
+        // --- AQUI É ONDE VOCÊ TRATA O 404 ---
+        onGenerateRoute: (RouteSettings settings) {
+          // Esta função é chamada para qualquer rota que não esteja definida no 'routes' acima.
+          // Você pode inspecionar settings.name para ver qual rota foi solicitada.
+
+          // Neste caso, se a rota não for encontrada nas rotas pré-definidas,
+          // simplesmente retorne a sua PageNotFoundPage.
+          return MaterialPageRoute(builder: (_) => const NaoEncontradoPage());
         },
       ),
     );

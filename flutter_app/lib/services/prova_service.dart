@@ -6,10 +6,7 @@ import '../auth/auth_helper.dart';
 import '../models/prova_model.dart';
 
 class ProvaService {
-
-
-  final String baseUrl =
-      'http://localhost:8080/api/provas'; // Ajuste se necessário
+  // Ajuste se necessário
 
   Future<List<ProvaModel>> fetchProvas() async {
     final tokenA = await AuthHelper.getToken();
