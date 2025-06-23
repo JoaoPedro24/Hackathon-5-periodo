@@ -9,6 +9,7 @@ class ProvaService {
   // Ajuste se necessário
 
   Future<List<ProvaModel>> fetchProvas() async {
+
     final tokenA = await AuthHelper.getToken();
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
@@ -22,6 +23,7 @@ class ProvaService {
       },
 
     );
+    print('🔐 Token sendo usado para buscar provas: $token');
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body);

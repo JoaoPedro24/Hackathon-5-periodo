@@ -29,57 +29,47 @@ class _ProfessorHomePageState extends State<ProfessorHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
     return ChangeNotifierProvider(
       create: (_) => ProvaViewModel()..carregarProvas(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Área do Professor'),
-          backgroundColor: theme.primaryColor,
-          elevation: 2,
         ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            child: Consumer<ProvaViewModel>(
-              builder: (context, viewModel, _) {
-                if (viewModel.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+        body: Consumer<ProvaViewModel>(
+          builder: (context, viewModel, _) {
+            if (viewModel.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-                if (viewModel.provas.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'Nenhuma prova cadastrada.',
-                      style: textTheme.bodyLarge,
-                    ),
-                  );
-                }
+            if (viewModel.provas.isEmpty) {
+              return const Center(
+                child: Text('Nenhuma prova cadastrada.'),
+              );
+            }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Bem-vindo, ${nomeUsuario ?? 'Professor'}!',
-                      style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Bem-vindo, ${nomeUsuario ?? 'Professor'}!',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: viewModel.provas.length,
+                      itemBuilder: (context, index) {
+                        final prova = viewModel.provas[index];
+                        return ProvaCard(prova: prova);
+                      },
                     ),
-                    const SizedBox(height: 16),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: viewModel.provas.length,
-                        itemBuilder: (context, index) {
-                          final prova = viewModel.provas[index];
-                          return ProvaCard(prova: prova);
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

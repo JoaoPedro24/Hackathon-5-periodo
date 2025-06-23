@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/provas")
 @RequiredArgsConstructor
@@ -30,12 +30,17 @@ public class ProvaApiController {
     @GetMapping
     public ResponseEntity<List<ProvaDto>> listarMinhasProvas(Principal principal) {
         String login = principal.getName();
+        System.out.println("🔐 Professor logado (login): " + login);
+
         Usuario professor = usuarioService.buscarPorLogin(login);
+        System.out.println("🧑‍🏫 Professor encontrado (ID): " + professor.getId());
 
         List<Prova> provas = provaService.listarPorProfessorId(professor.getId());
+        System.out.println("📚 Provas encontradas: " + provas.size());
+
         List<ProvaDto> dtos = provas.stream()
                 .map(this::converterParaDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(dtos);
     }
@@ -102,6 +107,7 @@ public class ProvaApiController {
                 .enunciado(questao.getEnunciado())
                 .build();
     }
+
     @GetMapping("/{provaId}/questoes")
     public ResponseEntity<List<QuestaoComRespostaDTO>> listarQuestoesDaProvaComRespostasDoAluno(
             @PathVariable Long provaId,
