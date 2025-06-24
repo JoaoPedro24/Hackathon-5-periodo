@@ -20,17 +20,19 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
+                    <th>Alunos</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="turma : ${turmas}">
                     <td th:text="${turma.id}"></td>
                     <td th:text="${turma.nome}"></td>
+                    <td th:text="${turma.alunos.size()}"></td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr class="table-secondary">
-                    <td colspan="2">Total de Turmas: <span th:text="${turmas.size()}">0</span></td>
+                    <td colspan="3">Total de Turmas: <span th:text="${turmas.size()}">0</span></td>
                 </tr>
                 </tfoot>
             </table>

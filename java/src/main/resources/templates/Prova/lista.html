@@ -46,7 +46,7 @@
                         Resultados
                     </a>
 
-                    <a th:if="${prova.dataAplicacao > T(java.time.LocalDate).now()}"
+                    <a sec:authorize="hasRole('PROFESSOR')" th:if="${prova.dataAplicacao > T(java.time.LocalDate).now()}"
                        th:href="@{/prova/editar/{id}(id=${prova.id})}" class="btn btn-warning btn-sm">
                         Editar
                     </a>

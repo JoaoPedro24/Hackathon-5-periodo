@@ -29,7 +29,7 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'btn btn-danger btn-sm';
-        btn.textContent = 'Remover';
+        btn.innerHTML = '<i class="bi bi-trash3-fill"></i>';
         btn.onclick = function () {
             container.removeChild(div);
         };
@@ -76,7 +76,7 @@
                                             th:text="${a.usuario?.nome + ' - ' + a.matricula}"
                                             th:selected="${a.id} == ${aluno.id}"></option>
                                 </select>
-                                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">Remover</button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()"><i class="bi bi-trash3-fill"></i></button>
                             </div>
                         </div>
 
