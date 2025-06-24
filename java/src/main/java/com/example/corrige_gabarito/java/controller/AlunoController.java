@@ -133,6 +133,10 @@ public class AlunoController {
         Usuario usuario = usuarioService.buscarPorLogin(principal.getName());
         Aluno aluno = alunoService.buscarPorUsuario(usuario);
 
+        if (aluno == null) {
+            return "redirect:/403";
+        }
+
         // Buscar IDs das turmas do aluno
         Set<Long> idsTurmas = aluno.getTurmas().stream()
                 .map(Turma::getId)
@@ -201,6 +205,10 @@ public class AlunoController {
         // Buscar utilizador logado
         Usuario usuario = usuarioService.buscarPorLogin(principal.getName());
         Aluno aluno = alunoService.buscarPorUsuario(usuario);
+
+        if (aluno == null) {
+            return "redirect:/403";
+        }
 
         List<RespostaAluno> respostas = respostaAlunoService.buscarPorAlunoEProva(aluno.getId(), provaId);
 

@@ -90,6 +90,7 @@ public class ProvaController {
     private String salvarOuAtualizar(Prova prova, Principal principal, Model model) {
         try {
             Usuario professor = usuarioService.buscarPorLogin(principal.getName());
+
             prova.setProfessor(professor);
 
             if (prova.getQuestoes() != null) {
