@@ -12,16 +12,14 @@ final GoRouter appRouter = GoRouter(
   initialLocation: '/login',
   // Lista de todas as rotas do app
   routes: [
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => LoginPage(),
-    ),
+    GoRoute(path: '/login', builder: (context, state) => LoginPage()),
     GoRoute(
       path: '/home',
-      builder: (context, state) => const AuthGuard(
-        protectedPage: HomePage(),
-        allowedRoles: ['PROFESSOR'],
-      ),
+      builder:
+          (context, state) => const AuthGuard(
+            protectedPage: HomePage(),
+            allowedRoles: ['PROFESSOR'],
+          ),
     ),
     GoRoute(
       // ':provaId' indica que essa parte da rota é um parâmetro
@@ -36,7 +34,6 @@ final GoRouter appRouter = GoRouter(
             body: Center(child: Text('ID da prova inválido ou não fornecido.')),
           );
         }
-
         return AuthGuard(
           protectedPage: VisualizarProvas(provaId: provaId),
           allowedRoles: const ['PROFESSOR'],
