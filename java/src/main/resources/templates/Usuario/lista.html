@@ -7,11 +7,24 @@
 <header th:replace="fragments/layout :: cabecalho"></header>
 <main class="flex-shrink-0">
     <div class="container-md">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Lista de Usuários</h2>
-            <a href="#" id="btnNovoUsuario" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUsuario">
-                <i class="bi bi-plus-circle"></i> Novo Usuário
-            </a>
+        <div class="mb-4">
+            <h2 class="mb-3">Lista de Usuários</h2>
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start gap-2">
+                <form th:action="@{/usuario/listar}" method="get" class="d-flex flex-column flex-sm-row w-100 gap-2">
+                    <select name="role" class="form-select">
+                        <option value="">Todos os Perfis</option>
+                        <option value="ADMIN" th:selected="${'ADMIN' == role}">Administrador</option>
+                        <option value="PROFESSOR" th:selected="${'PROFESSOR' == role}">Professor</option>
+                        <option value="ALUNO" th:selected="${'ALUNO' == role}">Aluno</option>
+                    </select>
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                </form>
+                <a href="#" id="btnNovoUsuario" class="btn btn-primary w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#modalUsuario">
+                    <i class="bi bi-plus-circle"></i> Novo Usuário
+                </a>
+            </div>
         </div>
 
         <!-- Exibir mensagens, se houver -->

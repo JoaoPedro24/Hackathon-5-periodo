@@ -102,7 +102,6 @@ public class ProvaApiController {
                 .build();
     }
 
-
     @GetMapping("/{provaId}/questoes")
     public ResponseEntity<List<QuestaoComRespostaDTO>> listarQuestoesDaProvaComRespostasDoAluno(
             @PathVariable Long provaId,

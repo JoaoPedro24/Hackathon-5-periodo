@@ -1,10 +1,8 @@
 package com.example.corrige_gabarito.java.controller;
 
-import com.example.corrige_gabarito.java.model.Aluno;
 import com.example.corrige_gabarito.java.model.Disciplina;
 import com.example.corrige_gabarito.java.model.Usuario;
 import com.example.corrige_gabarito.java.service.DisciplinaService;
-import com.example.corrige_gabarito.java.service.ProfessorService;
 import com.example.corrige_gabarito.java.service.UsuarioService;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,8 +10,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @AllArgsConstructor

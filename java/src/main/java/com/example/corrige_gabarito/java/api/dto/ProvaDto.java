@@ -1,17 +1,13 @@
 package com.example.corrige_gabarito.java.api.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@Data
 public class ProvaDto {
-
     private Long id;
     private String nome;
     private BigDecimal valorTotal;
