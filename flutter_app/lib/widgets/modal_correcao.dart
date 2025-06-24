@@ -6,7 +6,7 @@ import '../viewmodel/correcao_viewmodel.dart';
 
 class ModalCorrecao extends StatefulWidget {
   final int provaId;
-  final int alunoId; // novo
+  final int alunoId;
 
   const ModalCorrecao({Key? key, required this.provaId, required this.alunoId})
     : super(key: key);
@@ -19,7 +19,7 @@ class _ModalCorrecaoState extends State<ModalCorrecao> {
   final QuestaoService _questaoService = QuestaoService();
 
   late Future<List<QuestaoComResposta>> _questoesFuture;
-  Map<int, dynamic> respostas = {}; // questaoId -> resposta selecionada
+  Map<int, dynamic> respostas = {};
 
   @override
   void initState() {

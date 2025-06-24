@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 ThemeData themeApp() {
+  // definindo as cores do tema do APP
   final corPrimaria = Color(0xFF12159F);
   final corPrimariaDark = Color(0xFF00024E);
   final corPrimariaLight = Color(0xFF3F42FF);
   final corTextLight = Color(0xFFFFFFFF);
-  // final corTextDark = Color(0xFF000000);
 
   final appBarTema = AppBarTheme(
     color: corPrimariaDark,
@@ -17,6 +17,9 @@ ThemeData themeApp() {
     style: ButtonStyle(
       backgroundColor: WidgetStateProperty.all(corPrimaria),
       foregroundColor: WidgetStateProperty.all(corTextLight),
+      padding: WidgetStateProperty.all(
+        EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      ),
       shape: WidgetStateProperty.all(
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
@@ -41,7 +44,6 @@ ThemeData themeApp() {
       fontWeight: FontWeight.bold,
     ),
     headlineLarge: TextStyle(fontSize: 25, color: corTextLight),
-
   );
 
   return ThemeData(
