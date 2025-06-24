@@ -1,20 +1,11 @@
-// lib/widgets/prova_card.dart
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart'; // Importe o go_router
-import '../models/prova_model.dart'; // Importa o modelo de prova
+import 'package:go_router/go_router.dart';
+import '../models/prova_model.dart';
 
 class ProvaCard extends StatelessWidget {
   final ProvaModel prova;
 
-  // O parâmetro onVisualizar não é mais necessário aqui, pois a navegação é interna
-  // final VoidCallback? onVisualizar;
-
-  const ProvaCard({
-    super.key,
-    required this.prova,
-    // Remova o onVisualizar do construtor
-    // this.onVisualizar,
-  });
+  const ProvaCard({super.key, required this.prova});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +19,6 @@ class ProvaCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            // Informações da prova
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,17 +47,13 @@ class ProvaCard extends StatelessWidget {
                 ],
               ),
             ),
-            // Botão de Visualizar
             ElevatedButton(
-              // Usa context.go() para navegar para a rota GoRouter, passando o ID da prova
+
               onPressed: () {
-                context.go('/visualizarP/${prova.id}');
+                // context.go() utiliza-se para navegar para a rota GoRouter, passando o ID da prova
+                context.go('/visualizar/${prova.id}');
               },
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
-                ),
                 textStyle: const TextStyle(fontSize: 14),
               ),
               child: const Text('Visualizar'),

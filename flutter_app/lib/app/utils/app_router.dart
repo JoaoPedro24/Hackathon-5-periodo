@@ -32,7 +32,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       // Rota para visualizar provas com um ID dinâmico
       // O ':provaId' indica que essa parte da rota é um parâmetro
-      path: '/visualizarP/:provaId',
+      path: '/visualizar/:provaId',
       builder: (context, state) {
         // Extrai o 'provaId' dos parâmetros de caminho da URL
         final String? provaIdString = state.pathParameters['provaId'];
