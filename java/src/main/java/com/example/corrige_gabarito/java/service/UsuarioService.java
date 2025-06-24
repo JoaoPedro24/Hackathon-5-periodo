@@ -23,20 +23,13 @@ public class UsuarioService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // ENCONTRE SEU USUÁRIO NO BANCO DE DADOS
         Usuario usuario = usuarioRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
-
-        // ESTA LINHA É CRÍTICA! DEVE RETORNAR SUA INSTÂNCIA DE USUARIO!
-        return usuario; // <<<<<<<<<<<<<<<< ESTA É A LINHA QUE DEVE ESTAR ASSIM
-        // NÃO PODE SER: return new org.springframework.security.core.userdetails.User(...)
+        return usuario;
     }
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
-        // A senha JÁ DEVE ESTAR CODIFICADA quando este método for chamado.
-        // O PasswordEncoder deve ser usado ANTES de chamar .salvar()
-        // por exemplo, no seu AuthController ou em um serviço de registro.
         return usuarioRepository.save(usuario);
     }
     public List<Usuario> listarTodos() {

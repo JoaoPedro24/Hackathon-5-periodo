@@ -37,26 +37,11 @@ public class TurmaService {
     }
 
     public Turma buscarPorId(Long id) {
-        return turmaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Turma não encontrada"));
+        return turmaRepository.findById(id).orElse(null);
     }
 
     public void deletarTurma(Long id) {
         turmaRepository.deleteById(id);
     }
 
-    public void adicionarAluno(Long turmaId, Aluno aluno) {
-        Turma turma = buscarPorId(turmaId);
-        turma.adicionarAluno(aluno);
-        turmaRepository.save(turma);
-    }
-
-    public void removerAluno(Long turmaId, Long alunoId) {
-        Turma turma = buscarPorId(turmaId);
-        Aluno aluno = turma.getAlunos().stream()
-                .filter(a -> a.getId().equals(alunoId))
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Aluno não encontrado"));
-        turma.removerAluno(aluno);
-        turmaRepository.save(turma);
-    }
 }

@@ -20,11 +20,6 @@ public class UsuarioController {
     private final UsuarioService usuarioService;
     private final PasswordEncoder passwordEncoder;
 
-    @GetMapping
-    public String iniciar(Model model) {
-        model.addAttribute("usuario", new Usuario());
-        return "usuario/formulario";
-    }
 
     @GetMapping("/listar")
     public String listar(@RequestParam(required = false) String role, Model model) {

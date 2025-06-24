@@ -130,7 +130,6 @@ public class AlunoController {
             Model model,
             Principal principal) {
 
-        // Buscar o aluno logado
         Usuario usuario = usuarioService.buscarPorLogin(principal.getName());
         Aluno aluno = alunoService.buscarPorUsuario(usuario);
 
@@ -147,7 +146,7 @@ public class AlunoController {
                 .map(Prova::getDisciplina)
                 .collect(Collectors.toSet());
 
-        // Agora faz o filtro se o aluno escolheu uma disciplina
+        // filtro se o aluno escolheu uma disciplina
         List<Prova> provasFiltradas = todasAsProvas;
         if (disciplinaId != null) {
             provasFiltradas = todasAsProvas.stream()
@@ -203,7 +202,6 @@ public class AlunoController {
         Usuario usuario = usuarioService.buscarPorLogin(principal.getName());
         Aluno aluno = alunoService.buscarPorUsuario(usuario);
 
-        // Buscar todas as respostas desse aluno para a prova
         List<RespostaAluno> respostas = respostaAlunoService.buscarPorAlunoEProva(aluno.getId(), provaId);
 
         model.addAttribute("respostas", respostas);

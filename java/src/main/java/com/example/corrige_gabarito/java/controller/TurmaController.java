@@ -27,9 +27,6 @@ public class TurmaController {
     private final TurmaService turmaService;
     private final AlunoService alunoService;
 
-    /**
-     * Lista todas as turmas
-     */
     @GetMapping("/listar")
     public String listarTurmas(Model model, @RequestParam Optional<Long> turmaId) {
         model.addAttribute("turmas", turmaService.listarTodas());
@@ -40,10 +37,6 @@ public class TurmaController {
         return "turma/lista";
     }
 
-
-    /**
-     * Abre o modal para edição (chamado pelo botão Editar)
-     */
     @GetMapping("/editar/{id}")
     public String editarTurma(@PathVariable Long id, Model model) {
         Turma turma = turmaService.buscarPorId(id);
@@ -69,7 +62,7 @@ public class TurmaController {
             alunosIds = Collections.emptyList();
         }
         turmaService.salvarTurmaComAlunos(turma, alunosIds);
-        return "redirect:/turma/listar"; // redireciona para lista de turmas ou outra página
+        return "redirect:/turma/listar";
     }
 
     @GetMapping("/remover/{id}")
@@ -88,18 +81,4 @@ public class TurmaController {
         return "redirect:/turma/listar";
     }
 
-    /**
-     * Remover um aluno de uma turma
-     */
-    @PostMapping("/{turmaId}/aluno/{alunoId}/remover")
-    public String removerAluno(@PathVariable Long turmaId, @PathVariable Long alunoId, RedirectAttributes redirectAttributes) {
-        try {
-            turmaService.removerAluno(turmaId, alunoId);
-            redirectAttributes.addFlashAttribute("message", "Aluno removido com sucesso!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", "Erro ao remover aluno: " + e.getMessage());
-        }
-        redirectAttributes.addAttribute("turmaId", turmaId);
-        return "redirect:/turma/listar";
-    }
 }

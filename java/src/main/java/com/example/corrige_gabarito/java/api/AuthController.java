@@ -38,7 +38,6 @@ public class AuthController {
             Usuario usuario = (Usuario) authentication.getPrincipal();
             String token = jwtTokenProvider.generateToken(authentication);
 
-            // AGORA envia também a role no JSON
             return ResponseEntity.ok(new AuthResponse(token, usuario.getLogin(), usuario.getNome(), usuario.getRole()));
 
         } catch (AuthenticationException e) {

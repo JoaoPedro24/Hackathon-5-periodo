@@ -34,10 +34,6 @@ public class AlunoService {
     public void deletarPorId(Long id) {
         alunoRepository.deleteById(id);
     }
-    
-    public List<Usuario> listarUsuariosNaoAssociados() {
-        return usuarioRepository.findAlunosNaoAssociados();
-    }
 
     public Aluno buscarPorUsuario(Usuario usuario) {
         return alunoRepository.findByUsuario(usuario);

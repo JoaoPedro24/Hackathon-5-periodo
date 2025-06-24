@@ -49,7 +49,7 @@ public class DisciplinaController {
             String errorMessage = "Erro ao salvar disciplina: " + e.getMessage();
             model.addAttribute("message", errorMessage);
             model.addAttribute("professores", usuarioService.listarUsuariosPorRole("PROFESSOR"));
-            model.addAttribute("disciplina", disciplina);  // Keep the form data on error
+            model.addAttribute("disciplina", disciplina);
             return "disciplina/lista";
         }
     }

@@ -55,11 +55,9 @@
                     <form th:action="@{/turma}" method="post">
                         <input type="hidden" name="id" th:value="${turma?.id}" />
 
-                        <!-- Nome da Turma -->
                         <label>Nome da Turma:</label>
                         <input type="text" name="nome" class="form-control mb-3" th:value="${turma?.nome}" required />
 
-                        <!-- Select modelo oculto com opções de alunos -->
                         <select id="selectAlunoTemplate" style="display:none;">
                             <option value="">Selecione um aluno</option>
                             <option th:each="aluno : ${alunos}"
@@ -70,7 +68,6 @@
                         <hr>
                         <h6>Alunos:</h6>
                         <div id="alunosContainer">
-                            <!-- Se for edição, pode já carregar os alunos existentes -->
                             <div th:each="aluno : ${turma.alunos}" class="input-group mb-2 d-flex align-items-center">
                                 <select name="alunosIds" class="form-select form-select-sm" required>
                                     <option value="">Selecione um aluno</option>
