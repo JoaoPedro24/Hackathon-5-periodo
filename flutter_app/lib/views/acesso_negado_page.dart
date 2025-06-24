@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AcessoNegadoPage extends StatelessWidget {
   const AcessoNegadoPage({super.key});
@@ -24,10 +25,10 @@ class AcessoNegadoPage extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/professorHome');
+                context.go('/home');
               },
               child: const Text('Voltar para área permitida'),
-            )
+            ),
           ],
         ),
       ),

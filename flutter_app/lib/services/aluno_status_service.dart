@@ -1,19 +1,12 @@
-// lib/services/aluno_status_service.dart
+
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import '../models/alunos_status_model.dart';
 
 class AlunoStatusService {
-  // Construtor opcional, caso precise de dependências (ex: Dio, configurações de base URL)
   AlunoStatusService();
-
-  // Método para buscar o status dos alunos da API
-  // Ele retorna diretamente a lista de AlunoStatus ou lança uma exceção
   Future<List<AlunoStatus>> fetchAlunosStatus(int provaId, String token) async {
-    // URL da API, ajustando para o localhost do emulador Android se necessário
-    final url =
-        'http://localhost:8080/api/provas/$provaId/alunos-status'; // Para emulador Android
+    final url = 'http://localhost:8080/api/provas/$provaId/alunos-status';
 
     try {
       final response = await http.get(

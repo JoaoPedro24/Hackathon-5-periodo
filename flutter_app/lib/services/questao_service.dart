@@ -4,7 +4,6 @@ import '../auth/auth_helper.dart';
 import '../models/questao_com_reposta_model.dart';
 
 class QuestaoService {
-  // URL fixa para buscar questões da prova (troque localhost para 10.0.2.2 se for Android emulator)
   Future<List<QuestaoComResposta>> fetchQuestoes(int provaId) async {
     final urlQ = Uri.parse(
       'http://localhost:8080/api/provas/$provaId/questoes',
@@ -13,6 +12,7 @@ class QuestaoService {
     if (token == null) {
       throw Exception('Token não encontrado. Faça login novamente.');
     }
+    // verificando se a rota está sendo consumida
     print('URL para buscar questões: $urlQ');
     print('Token usado: $token');
 
@@ -37,11 +37,8 @@ class QuestaoService {
         if (questao.tipo == 'ALTERNATIVA' && questao.alternativas.isEmpty) {
           questao.alternativas = ['A', 'B', 'C', 'D', 'E'];
         }
-
-        if (questao.respostaAluno == null) {
-          questao.respostaAluno = questao.tipo == 'ALTERNATIVA' ? '' : '';
-        }
-
+        // ??= é o operador de atribuição condicional nula
+        questao.respostaAluno ??= questao.tipo == 'ALTERNATIVA' ? '' : '';
         return questao;
       }).toList();
     } else {

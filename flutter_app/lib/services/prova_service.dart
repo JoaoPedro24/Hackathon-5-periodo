@@ -1,4 +1,3 @@
-// services/prova_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,7 +5,6 @@ import '../auth/auth_helper.dart';
 import '../models/prova_model.dart';
 
 class ProvaService {
-  // Ajuste se necessário
 
   Future<List<ProvaModel>> fetchProvasProfessor() async {
     final prefs = await SharedPreferences.getInstance();
@@ -26,7 +24,6 @@ class ProvaService {
 
       print('Código da resposta: ${response.statusCode}');
       print('Body da resposta: ${response.body}');
-      print('🔐 Token sendo usado para buscar provas: $token');
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = jsonDecode(response.body);
