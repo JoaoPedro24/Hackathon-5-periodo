@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart'; // ✅ Importar o go_router
 
 class NaoEncontradoPage extends StatelessWidget {
   const NaoEncontradoPage({super.key});
@@ -12,7 +13,7 @@ class NaoEncontradoPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.sentiment_dissatisfied, // Ícone que sugere "não encontrado"
+              Icons.sentiment_dissatisfied,
               size: 80,
               color: Colors.grey,
             ),
@@ -31,13 +32,11 @@ class NaoEncontradoPage extends StatelessWidget {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Voltar para a página anterior, ou para a home se não houver
-                if (Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
+                // Tenta voltar; se não for possível, vai para login
+                if (context.canPop()) {
+                  context.pop();
                 } else {
-                  Navigator.of(context).pushReplacementNamed(
-                    '/login',
-                  ); // Ou para '/home' se for o caso
+                  context.go('/login'); // Ou para '/home' se preferir
                 }
               },
               child: const Text('Voltar'),
