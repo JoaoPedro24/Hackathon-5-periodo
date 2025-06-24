@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,13 +59,30 @@ public class ProvaApiController {
         List<RespostaAluno> respostas = respostaAlunoService.buscarPorProvaId(provaId);
 
         List<AlunoStatusDTO> statusAlunos = alunosDaProva.stream().map(aluno -> {
-            boolean corrigido = respostas.stream().anyMatch(r -> r.getAluno().getId().equals(aluno.getId()));
+            List<RespostaAluno> respostasDoAluno = respostas.stream()
+                    .filter(r -> r.getAluno().getId().equals(aluno.getId()))
+                    .collect(Collectors.toList());
+
+            boolean corrigido = !respostasDoAluno.isEmpty();
             String status = corrigido ? "CORRIGIDO" : "PENDENTE";
+
+            BigDecimal nota = corrigido
+                    ? respostasDoAluno.stream()
+                    .map(RespostaAluno::getValor)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+                    : BigDecimal.ZERO;
+
+            int acertos = (int) respostasDoAluno.stream()
+                    .filter(r -> r.getValor().compareTo(BigDecimal.ZERO) > 0)
+                    .count();
+
             return new AlunoStatusDTO(
                     aluno.getId(),
                     aluno.getUsuario().getNome(),
                     status,
-                    aluno.getMatricula() // ✅ aqui pega a matrícula do aluno
+                    aluno.getMatricula(),
+                    nota,
+                    acertos
             );
         }).collect(Collectors.toList());
 

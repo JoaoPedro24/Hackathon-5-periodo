@@ -35,13 +35,7 @@ class QuestaoService {
 
         // Mock temporário para alternativas e resposta do aluno
         if (questao.tipo == 'ALTERNATIVA' && questao.alternativas.isEmpty) {
-          questao.alternativas = [
-            'Alternativa A',
-            'Alternativa B',
-            'Alternativa C',
-            'Alternativa D',
-            'Alternativa E',
-          ];
+          questao.alternativas = ['A', 'B', 'C', 'D', 'E'];
         }
 
         if (questao.respostaAluno == null) {

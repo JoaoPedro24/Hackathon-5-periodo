@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../auth/auth_helper.dart';
 import '../models/alunos_status_model.dart';
 import '../services/aluno_status_service.dart';
@@ -43,7 +44,43 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Status dos Alunos na Prova')),
+      appBar: AppBar(
+        title: const Text('Status dos Alunos na Prova'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Sair',
+            onPressed: () async {
+              final shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (ctx) {
+                  return AlertDialog(
+                    title: const Text('Confirmar Logout'),
+                    content: const Text('Você tem certeza que deseja sair?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        child: const Text('Sair'),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (shouldLogout == true) {
+                await AuthHelper.logout();
+                if (mounted) {
+                  context.go('/login');
+                }
+              }
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<List<AlunoStatus>>(
@@ -85,6 +122,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Nome e matrícula
                           Text(
                             aluno.nome,
                             style: theme.textTheme.titleMedium?.copyWith(
@@ -100,28 +138,72 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                               ),
                             ),
                           const SizedBox(height: 4),
+
+                          // Status
                           Text(
                             'Status: ${aluno.status}',
                             style: theme.textTheme.bodyMedium,
                           ),
-                          if (aluno.nota != null)
-                            Text(
-                              'Nota: ${aluno.nota!.toStringAsFixed(2)}',
-                              style: theme.textTheme.bodyMedium,
+                          const SizedBox(height: 4),
+
+                          // Exibir nota apenas se já corrigido
+                          if (aluno.nota != null) ...[
+                            Wrap(
+                              spacing: 8,
+                              children: [
+                                Chip(
+                                  label: Text(
+                                    'Nota: ${aluno.nota!.toStringAsFixed(2)}',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  backgroundColor: theme.primaryColor,
+                                ),
+                                if (aluno.acertos != null)
+                                  Chip(
+                                    label: Text(
+                                      'Acertos: ${aluno.acertos}',
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                              ],
                             ),
-                          const SizedBox(height: 8),
-                          ElevatedButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder:
-                                    (_) =>
-                                        ModalCorrecao(provaId: widget.provaId),
-                              );
-                            },
-                            child: const Text('Corrigir'),
-                          ),
+                            const SizedBox(height: 8),
+                          ],
+
+                          // Botão Corrigir apenas se status != CORRIGIDO
+                          if (aluno.status.toUpperCase() != 'CORRIGIDO')
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final atualizado =
+                                      await showModalBottomSheet<bool>(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder:
+                                            (_) => ModalCorrecao(
+                                              provaId: widget.provaId,
+                                              alunoId: aluno.id,
+                                            ),
+                                      );
+
+                                  if (atualizado == true) {
+                                    setState(() {
+                                      _alunosStatusFuture = _loadAlunos();
+                                    });
+                                  }
+                                },
+                                child: const Text('Corrigir'),
+                              ),
+                            ),
                         ],
                       ),
                     ),

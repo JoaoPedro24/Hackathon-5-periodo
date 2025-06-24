@@ -1,10 +1,12 @@
 // lib/views/home_page.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_animated/auto_animated.dart'; // Importe o auto_animated
 import '../../viewmodel/prova_viewmodel.dart';
 import '../../widgets/prova_card.dart';
+import '../auth/auth_helper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,7 +43,43 @@ class _ProfessorHomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Área do Professor')),
+      appBar: AppBar(
+        title: const Text('Área do Professor'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Sair',
+            onPressed: () async {
+              final shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (ctx) {
+                  return AlertDialog(
+                    title: const Text('Confirmar Logout'),
+                    content: const Text('Você tem certeza que deseja sair?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        child: const Text('Sair'),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (shouldLogout == true) {
+                await AuthHelper.logout();
+                if (mounted) {
+                  context.go('/login');
+                }
+              }
+            },
+          ),
+        ],
+      ),
       body: Consumer<ProvaViewModel>(
         builder: (context, viewModel, _) {
           if (viewModel.isLoading) {

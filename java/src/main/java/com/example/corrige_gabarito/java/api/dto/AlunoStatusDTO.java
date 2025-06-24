@@ -3,6 +3,8 @@ package com.example.corrige_gabarito.java.api.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 public class AlunoStatusDTO {
@@ -10,5 +12,6 @@ public class AlunoStatusDTO {
     private String nomeAluno;
     private String status;
     private String matricula;
-// "CORRIGIDO" ou "PENDENTE"
+    private BigDecimal nota;  // ✅ nova propriedade
+    private Integer acertos;
 }

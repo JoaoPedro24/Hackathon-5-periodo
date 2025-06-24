@@ -5,6 +5,7 @@ class AlunoStatus {
   final String status; // Ex: 'Entregue', 'Não Entregue', 'Corrigido'
   final String? matricula;
   final double? nota;
+  final int? acertos;
 
   AlunoStatus({
     required this.id,
@@ -12,19 +13,17 @@ class AlunoStatus {
     required this.status,
     this.matricula,
     this.nota,
+    this.acertos,
   });
 
   factory AlunoStatus.fromJson(Map<String, dynamic> json) {
     return AlunoStatus(
-      // Mapeia 'alunoId' do JSON para 'id' do modelo
       id: json['alunoId'],
-      // Mapeia 'nomeAluno' do JSON para 'nome' do modelo
       nome: json['nomeAluno'],
-      // 'status' permanece o mesmo
       status: json['status'],
-      // 'nota' ainda é opcional e pode ser nulo se não vier no JSON
-      nota: (json['nota'] as num?)?.toDouble(),
       matricula: json['matricula'],
+      nota: (json['nota'] as num?)?.toDouble(),
+      acertos: json['acertos'],
     );
   }
 }
