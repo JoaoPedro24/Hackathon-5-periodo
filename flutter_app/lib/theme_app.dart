@@ -41,6 +41,7 @@ ThemeData themeApp() {
       fontWeight: FontWeight.bold,
     ),
     headlineLarge: TextStyle(fontSize: 25, color: corTextLight),
+
   );
 
   return ThemeData(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/viewmodel/login_viewmodel.dart';
 import 'package:flutter_app/widgets/login_form.dart';
 import 'package:flutter_app/widgets/login_header.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -106,10 +107,7 @@ class LoginPage extends StatelessWidget {
                                                 switch (userRole) {
 
                                                   case 'PROFESSOR':
-                                                    Navigator.pushReplacementNamed(
-                                                      context,
-                                                      '/home',
-                                                    );
+                                                    context.go('/home');
                                                     break;
                                                   default:
                                                     print(
