@@ -3,12 +3,14 @@ class AlunoStatus {
   final int id;
   final String nome;
   final String status; // Ex: 'Entregue', 'Não Entregue', 'Corrigido'
-  final double? nota; // Pode ser nulo se ainda não corrigido
+  final String? matricula;
+  final double? nota;
 
   AlunoStatus({
     required this.id,
     required this.nome,
     required this.status,
+    this.matricula,
     this.nota,
   });
 
@@ -22,6 +24,7 @@ class AlunoStatus {
       status: json['status'],
       // 'nota' ainda é opcional e pode ser nulo se não vier no JSON
       nota: (json['nota'] as num?)?.toDouble(),
+      matricula: json['matricula'],
     );
   }
 }
