@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
+import '../services/login_auth_service.dart';
 import '../models/usuario_model.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final LoginAuthService _authService = LoginAuthService();
 
   bool _isLoading = false;
   bool _obscurePassword = true;

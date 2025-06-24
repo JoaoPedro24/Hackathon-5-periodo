@@ -34,6 +34,7 @@ ThemeData themeApp() {
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(color: corPrimariaLight, width: 2),
       borderRadius: BorderRadius.circular(20),
+
     ),
   );
 

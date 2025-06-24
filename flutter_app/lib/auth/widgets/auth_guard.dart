@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:go_router/go_router.dart'; // ✅ GoRouter import
+import 'package:go_router/go_router.dart';
 
 class AuthGuard extends StatelessWidget {
   final Widget protectedPage;
@@ -17,16 +17,13 @@ class AuthGuard extends StatelessWidget {
       return _AuthStatus.notLoggedIn;
     }
 
-    // Se nenhuma role específica for exigida, qualquer login serve
     if (allowedRoles == null || allowedRoles!.isEmpty) {
       return _AuthStatus.authorized;
     }
 
-    // ADMIN sempre pode acessar
     if (role == 'ADMIN' || allowedRoles!.contains(role)) {
       return _AuthStatus.authorized;
     }
-
     return _AuthStatus.notAuthorized;
   }
 
@@ -45,13 +42,11 @@ class AuthGuard extends StatelessWidget {
         if (status == _AuthStatus.authorized) {
           return protectedPage;
         } else if (status == _AuthStatus.notLoggedIn) {
-          // Redireciona para login usando o GoRouter
           Future.microtask(() => context.go('/login'));
           return const Scaffold(
             body: Center(child: Text('Redirecionando para login...')),
           );
         } else {
-          // Redireciona para acessoNegado usando o GoRouter
           Future.microtask(() => context.go('/acessoNegado'));
           return const Scaffold(body: Center(child: Text('Acesso negado.')));
         }

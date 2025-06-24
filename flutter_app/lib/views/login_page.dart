@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/viewmodel/login_viewmodel.dart';
 import 'package:flutter_app/widgets/login_form.dart';
 import 'package:flutter_app/widgets/login_header.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -17,13 +16,10 @@ class LoginPage extends StatelessWidget {
     final viewModel = Provider.of<LoginViewModel>(context);
     final textTheme = Theme.of(context).textTheme;
 
-    // Largura máxima desejada para o “card” de login
     final maxWidth = 400.0;
-    // Altura máxima desejada (opcional). Pode ajustar conforme preferir.
     final maxHeight = 600.0;
 
     return Scaffold(
-      // Impede que o Scaffold seja “empurrado” quando o teclado abrir
       resizeToAvoidBottomInset: false,
       body: Container(
         width: double.infinity,
@@ -39,16 +35,13 @@ class LoginPage extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, constraints) {
               return Center(
-                // Se quiser apenas largura fixa: usar SizedBox(width: maxWidth, child: ...)
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    // limitar largura para telas grandes
                     maxWidth: maxWidth,
-                    // opcional: limitar altura do card de login
                     maxHeight: maxHeight,
                   ),
                   child: Card(
-                    // usar Card ou Container com BoxDecoration para destacar o formulário
+
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -60,7 +53,6 @@ class LoginPage extends StatelessWidget {
                         vertical: 32,
                       ),
                       child: SingleChildScrollView(
-                        // permite rolar caso o teclado reduza muito o espaço
                         child: Form(
                           key: _formKey,
                           child: Column(
@@ -73,91 +65,11 @@ class LoginPage extends StatelessWidget {
                                 loginController: _loginController,
                                 passwordController: _passwordController,
                                 obscurePassword: viewModel.obscurePassword,
-                                onToggleObscure:
-                                    viewModel.toggleObscurePassword,
+                                onToggleObscure: viewModel.toggleObscurePassword,
+                                isLoading: viewModel.isLoading,
+                                errorMessage: viewModel.errorMessage,
                               ),
                               const SizedBox(height: 32),
-                              if (viewModel.errorMessage != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: Text(
-                                    viewModel.errorMessage!,
-                                    style: const TextStyle(color: Colors.red),
-                                  ),
-                                ),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton.icon(
-                                  onPressed:
-                                      viewModel.isLoading
-                                          ? null
-                                          : () async {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              final user = await viewModel
-                                                  .fazerLogin(
-                                                    _loginController.text
-                                                        .trim(),
-                                                    _passwordController.text,
-                                                  );
-                                              if (user != null) {
-                                                final userRole =
-                                                    user.role.toUpperCase();
-                                                switch (userRole) {
-
-                                                  case 'PROFESSOR':
-                                                    context.go('/home');
-                                                    break;
-                                                  default:
-                                                    print(
-                                                      'Role desconhecida recebida: ${userRole}',
-                                                    );
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Erro: Tipo de usuário desconhecido. Contate o suporte.',
-                                                        ),
-                                                        backgroundColor:
-                                                            Colors.red,
-                                                      ),
-                                                    );
-                                                    break;
-                                                }
-                                              }
-                                            }
-                                          },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        Theme.of(context).primaryColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    elevation: 4,
-                                    shadowColor: Colors.black26,
-                                  ),
-                                  icon:
-                                      viewModel.isLoading
-                                          ? const SizedBox(
-                                            width: 16,
-                                            height: 16,
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2,
-                                            ),
-                                          )
-                                          : const Icon(Icons.login),
-                                  label: const Text(
-                                    'Entrar',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ),

@@ -4,14 +4,11 @@ import '../auth/auth_helper.dart';
 import '../models/usuario_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-class AuthService {
+class LoginAuthService {
   Future<Usuario?> login(String login, String senha) async {
 
     final url = Uri.parse('http://localhost:8080/auth/login');
     print('URL: $url');
-
-    // Certifique-se que é /auth/login
 
     try {
       final response = await http.post(
@@ -28,13 +25,13 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final usuario = Usuario.fromJson(data); // ✅ instância criada aqui
+        final usuario = Usuario.fromJson(data);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', usuario.token);
         await prefs.setString('usuario_nome', usuario.nome);
         await prefs.setString('usuario_role', usuario.role);
 
-        await AuthHelper.saveToken(usuario.token); // ✅ agora pode usar
+        await AuthHelper.saveToken(usuario.token);
 
         return usuario;
       } else {

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../auth/auth_helper.dart';
 import '../models/alunos_status_model.dart';
 import '../services/aluno_status_service.dart';
-import '../widgets/modal_correcao.dart'; // ✅ Importa o service
+import '../widgets/modal_correcao.dart';
 
 class VisualizarProvas extends StatefulWidget {
   final int provaId;
@@ -17,8 +17,7 @@ class VisualizarProvas extends StatefulWidget {
 class _VisualizarProvaScreenState extends State<VisualizarProvas> {
   late Future<List<AlunoStatus>> _alunosStatusFuture;
 
-  final AlunoStatusService _alunoStatusService =
-      AlunoStatusService(); // ✅ instância do service
+  final AlunoStatusService _alunoStatusService = AlunoStatusService();
 
   @override
   void initState() {
@@ -27,7 +26,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
   }
 
   Future<List<AlunoStatus>> _loadAlunos() async {
-    final token = await AuthHelper.getToken(); // ✅ busca token
+    final token = await AuthHelper.getToken();
 
     if (token == null) {
       throw Exception('Token não encontrado. Faça login novamente.');
@@ -36,7 +35,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
     return await _alunoStatusService.fetchAlunosStatus(
       widget.provaId,
       token,
-    ); // ✅ usa service
+    );
   }
 
   @override
@@ -49,6 +48,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
+            color: Colors.white,
             tooltip: 'Sair',
             onPressed: () async {
               final shouldLogout = await showDialog<bool>(
@@ -74,6 +74,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
               if (shouldLogout == true) {
                 await AuthHelper.logout();
                 if (mounted) {
+                  // redireciona para a tela de login e remove o token
                   context.go('/login');
                 }
               }
@@ -81,6 +82,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
           ),
         ],
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder<List<AlunoStatus>>(
@@ -122,7 +124,6 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Nome e matrícula
                           Text(
                             aluno.nome,
                             style: theme.textTheme.titleMedium?.copyWith(
@@ -138,7 +139,6 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                               ),
                             ),
                           const SizedBox(height: 4),
-
                           // Status
                           Text(
                             'Status: ${aluno.status}',
@@ -146,7 +146,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                           ),
                           const SizedBox(height: 4),
 
-                          // Exibir nota apenas se já corrigido
+                          // Exibe nota se já foi corrigido
                           if (aluno.nota != null) ...[
                             Wrap(
                               spacing: 8,
@@ -178,7 +178,7 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                             const SizedBox(height: 8),
                           ],
 
-                          // Botão Corrigir apenas se status != CORRIGIDO
+                          // Botão Corrigir apenas se status for diferente de CORRIGIDO
                           if (aluno.status.toUpperCase() != 'CORRIGIDO')
                             Align(
                               alignment: Alignment.centerRight,

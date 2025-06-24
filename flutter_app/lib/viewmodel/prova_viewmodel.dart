@@ -1,4 +1,3 @@
-// viewmodels/prova_viewmodel.dart
 import 'package:flutter/material.dart';
 import '../models/prova_model.dart';
 import '../services/prova_service.dart';
@@ -18,7 +17,7 @@ class ProvaViewModel extends ChangeNotifier {
 
     try {
       _provas =
-      await _service.fetchProvasProfessor(); // sempre chama a mesma rota
+      await _service.fetchProvasProfessor();
     } catch (e) {
       print('Erro ao carregar provas: $e');
       _provas = [];

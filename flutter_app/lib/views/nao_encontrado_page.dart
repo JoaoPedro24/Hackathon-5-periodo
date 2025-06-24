@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart'; // ✅ Importar o go_router
+import 'package:go_router/go_router.dart';
 
 class NaoEncontradoPage extends StatelessWidget {
   const NaoEncontradoPage({super.key});
@@ -32,11 +32,10 @@ class NaoEncontradoPage extends StatelessWidget {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // Tenta voltar; se não for possível, vai para login
                 if (context.canPop()) {
                   context.pop();
                 } else {
-                  context.go('/login'); // Ou para '/home' se preferir
+                  context.go('/home');
                 }
               },
               child: const Text('Voltar'),

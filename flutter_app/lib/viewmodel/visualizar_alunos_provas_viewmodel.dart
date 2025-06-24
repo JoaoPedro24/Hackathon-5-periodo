@@ -1,7 +1,7 @@
-// lib/viewmodel/visualizar_provas_viewmodel.dart
+
 import 'package:flutter/material.dart';
 import '../models/alunos_status_model.dart';
-import '../services/aluno_status_service.dart'; // Importa o serviço AlunoStatusService
+import '../services/aluno_status_service.dart';
 
 class VisualizarAlunosProvasViewmodel extends ChangeNotifier {
   final AlunoStatusService _alunoStatusService;
@@ -13,14 +13,12 @@ class VisualizarAlunosProvasViewmodel extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Getters
   List<AlunoStatus> get alunos => _alunos;
 
   bool get isLoading => _isLoading;
 
   String? get errorMessage => _errorMessage;
 
-  // Setter para token
   void setToken(String token) {
     _token = token;
   }

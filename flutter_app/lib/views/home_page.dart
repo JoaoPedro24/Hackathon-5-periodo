@@ -47,7 +47,7 @@ class _ProfessorHomePageState extends State<HomePage> {
         title: const Text('Área do Professor'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(Icons.logout), color:  Colors.white,
             tooltip: 'Sair',
             onPressed: () async {
               final shouldLogout = await showDialog<bool>(

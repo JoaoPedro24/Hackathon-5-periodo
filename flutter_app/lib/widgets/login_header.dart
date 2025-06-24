@@ -32,7 +32,7 @@ class LoginHeader extends StatelessWidget {
           style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Text(
           'Faça login para continuar',
           style: textTheme.bodyLarge,
