@@ -36,7 +36,7 @@
                     <div class="d-flex flex-column align-items-center">
                         <small th:text="${#temporals.format(item.data, 'dd/MM/yyyy')}">Data da Prova</small>
 
-                        <!-- Chip com resultado -->
+                        <!-- Background com resultado -->
                         <span th:if="${item.resultado != null}"
                               class="badge bg-success mt-1">
                             Nota: <span th:text="${#numbers.formatDecimal(item.resultado, 1, 1)}"></span> /

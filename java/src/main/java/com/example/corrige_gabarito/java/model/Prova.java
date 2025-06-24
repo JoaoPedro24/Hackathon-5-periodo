@@ -42,13 +42,4 @@ public class Prova {
     @EqualsAndHashCode.Exclude
     private List<Questao> questoes = new ArrayList<>();
 
-    /**
-     * Helper: Garante que as questões tenham referência para esta prova
-     */
-    public void adicionarQuestoes(List<Questao> questoes) {
-        this.questoes = questoes;
-        if (questoes != null) {
-            questoes.forEach(q -> q.setProva(this));
-        }
-    }
-}
+   }

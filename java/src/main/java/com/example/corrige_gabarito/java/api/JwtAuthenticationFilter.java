@@ -18,7 +18,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserDetailsService userDetailsService; // Use UserDetailsService (ou seu CustomUserDetailsService)
+    private final UserDetailsService userDetailsService;
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -37,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = jwtTokenProvider.getUsernameFromToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                // ADICIONE AQUI:
                 System.out.println("DEBUG: Usuário autenticado: " + username);
                 System.out.println("DEBUG: Authorities carregadas para " + username + ": " + userDetails.getAuthorities());
 
@@ -49,7 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (Exception ex) {
             System.err.println("Não foi possível autenticar o usuário com o token JWT: " + ex.getMessage());
-            // Não jogue a exceção aqui para permitir que o AuthenticationEntryPoint trate 401
         }
 
         filterChain.doFilter(request, response);

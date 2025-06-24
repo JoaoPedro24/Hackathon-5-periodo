@@ -22,14 +22,12 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
 
-        // Listas
         List<Turma> turmas = turmaService.listarTodas();
         List<Disciplina> disciplinas = disciplinaService.listarTodos();
         List<Aluno> alunos = alunoService.listarTodos();
         List<Prova> provas = provaService.listarTodas();
         List<Usuario> professores = professorService.listarUsuariosPorRole("PROFESSOR");
 
-        // Totais
         model.addAttribute("turmas", turmas);
         model.addAttribute("disciplinas", disciplinas);
         model.addAttribute("alunos", alunos);

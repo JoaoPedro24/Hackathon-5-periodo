@@ -63,7 +63,7 @@
             const form = document.querySelector('#modalAluno form');
             const passwordInput = document.getElementById('password');
             const passwordError = document.getElementById('passwordError');
-            const isNewUser = /*[[${aluno?.usuario?.id == null}]]*/ false;  // Thymeleaf irá substituir true/false
+            const isNewUser = /*[[${aluno?.usuario?.id == null}]]*/ false;
 
             form.addEventListener('submit', function(e) {
                 const senha = passwordInput.value;

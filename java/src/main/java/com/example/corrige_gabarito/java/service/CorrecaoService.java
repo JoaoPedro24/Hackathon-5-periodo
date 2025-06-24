@@ -23,22 +23,29 @@ public class CorrecaoService {
     private final QuestaoRepository questaoRepository;
     private final RespostaAlunoRepository respostaAlunoRepository;
 
+    /**
+     * Método responsável por corrigir a prova de um aluno.
+     * Recebe as respostas do aluno, calcula acertos e pontuação, e salva as respostas no banco.
+     */
     public CorrecaoProvaResponse corrigirProvaAluno(CorrecaoProvaAlunoRequest request) {
+
         List<Questao> questoes = questaoRepository.findByProvaId(request.getProvaId());
 
         int totalAcertos = 0;
         BigDecimal pontuacaoTotal = BigDecimal.ZERO;
         List<RespostaAluno> respostasParaSalvar = new ArrayList<>();
 
-        // Criando objetos de Aluno e Prova apenas com o ID (evita buscar do banco)
+        // Criando instâncias de Aluno e Prova apenas com o ID (sem buscar do banco)
         Aluno aluno = new Aluno();
         aluno.setId(request.getAlunoId());
 
         Prova prova = new Prova();
         prova.setId(request.getProvaId());
 
+        // Loop para percorrer todas as respostas enviadas pelo aluno
         for (CorrecaoProvaAlunoRequest.RespostaQuestaoDTO respostaDTO : request.getRespostas()) {
 
+            // Buscar a questão correspondente ao ID da resposta
             Optional<Questao> optionalQuestao = questoes.stream()
                     .filter(q -> q.getId().equals(respostaDTO.getQuestaoId()))
                     .findFirst();
@@ -52,6 +59,7 @@ public class CorrecaoService {
                 respostaAluno.setQuestao(questao);
                 respostaAluno.setResposta(respostaDTO.getResposta());
 
+                // Se a questão for do tipo ALTERNATIVA (correção automática)
                 if (questao.getTipo() == Questao.TipoQuestao.ALTERNATIVA) {
                     boolean acertou = questao.getRespostaCorreta() != null
                             && questao.getRespostaCorreta().equalsIgnoreCase(respostaDTO.getResposta());
@@ -64,13 +72,14 @@ public class CorrecaoService {
                         respostaAluno.setValor(BigDecimal.ZERO);
                     }
                 } else {
+                    // Se for questão dissertativa, armazena o valor enviado
                     BigDecimal valorResposta = BigDecimal.ZERO;
                     try {
                         if (respostaDTO.getValor() != null) {
                             valorResposta = new BigDecimal(respostaDTO.getValor());
                         }
                     } catch (NumberFormatException e) {
-                        valorResposta = BigDecimal.ZERO;
+                        valorResposta = BigDecimal.ZERO; // Em caso de erro de formato, define como 0
                     }
                     respostaAluno.setValor(valorResposta);
                 }

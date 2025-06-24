@@ -11,7 +11,4 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByLogin(String login);
     List<Usuario> findByRoleIgnoreCase(String role);
-    
-    @Query("SELECT u FROM Usuario u WHERE u.role = 'ALUNO' AND NOT EXISTS (SELECT 1 FROM Aluno a WHERE a.usuario = u)")
-    List<Usuario> findAlunosNaoAssociados();
 }

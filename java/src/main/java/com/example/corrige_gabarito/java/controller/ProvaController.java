@@ -35,10 +35,8 @@ public class ProvaController {
 
         List<Prova> provas;
         if (professor.getRole().contains("PROFESSOR")) {
-            // Se for professor, lista apenas as provas dele
             provas = provaService.listarPorProfessorId(professor.getId());
         } else {
-            // Se for outro tipo (admin, etc), lista todas as provas
             provas = provaService.listarTodas();
         }
 
@@ -89,9 +87,6 @@ public class ProvaController {
         return "redirect:/prova/listar";
     }
 
-    /**
-     * Método auxiliar para salvar ou atualizar prova (evitando duplicação de código)
-     */
     private String salvarOuAtualizar(Prova prova, Principal principal, Model model) {
         try {
             Usuario professor = usuarioService.buscarPorLogin(principal.getName());
@@ -124,7 +119,6 @@ public class ProvaController {
 
         List<RespostaAluno> respostas = respostaAlunoService.buscarPorProvaId(id);
 
-        // Agrupar respostas por aluno
         Map<Aluno, List<RespostaAluno>> respostasPorAluno = respostas.stream()
                 .collect(Collectors.groupingBy(RespostaAluno::getAluno));
 
@@ -150,10 +144,8 @@ public class ProvaController {
                     (int) questoesCertas
             ));
 
-            if (notaTotal.compareTo(BigDecimal.ZERO) > 0) {
-                somaNotas += notaTotal.doubleValue();
-                alunosCorrigidos++;
-            }
+            somaNotas += notaTotal.doubleValue();
+            alunosCorrigidos++;
         }
 
         double mediaTurma = alunosCorrigidos > 0 ? somaNotas / alunosCorrigidos : 0;

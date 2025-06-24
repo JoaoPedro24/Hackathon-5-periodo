@@ -33,9 +33,6 @@ public class Questao {
     @JoinColumn(name = "prova_id", nullable = false)
     private Prova prova;
 
-    /**
-     * Enum representando os tipos de questão possíveis
-     */
     public enum TipoQuestao {
         DISCURSIVA,
         ALTERNATIVA
