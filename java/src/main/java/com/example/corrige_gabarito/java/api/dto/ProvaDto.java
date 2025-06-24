@@ -17,17 +17,6 @@ public class ProvaDto {
     private BigDecimal valorTotal;
     private String disciplina;
     private String turma;
-    private List<QuestaoDTO> questoes;
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public static class QuestaoDTO {
-        private Long id;
-        private String tipo;
-        private BigDecimal valor;
-        private String enunciado;
-    }
+    private Integer totalAlunos;
+    private Integer totalAlunosCorrigidos;
 }
