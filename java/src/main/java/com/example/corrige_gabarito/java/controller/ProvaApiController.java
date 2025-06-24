@@ -74,7 +74,12 @@ public class ProvaApiController {
         List<AlunoStatusDTO> statusAlunos = alunosDaProva.stream().map(aluno -> {
             boolean corrigido = respostas.stream().anyMatch(r -> r.getAluno().getId().equals(aluno.getId()));
             String status = corrigido ? "CORRIGIDO" : "PENDENTE";
-            return new AlunoStatusDTO(aluno.getId(), aluno.getUsuario().getNome(), status);
+            return new AlunoStatusDTO(
+                    aluno.getId(),
+                    aluno.getUsuario().getNome(),
+                    status,
+                    aluno.getMatricula() // ✅ aqui pega a matrícula do aluno
+            );
         }).collect(Collectors.toList());
 
         return ResponseEntity.ok(statusAlunos);

@@ -8,5 +8,7 @@ import lombok.Data;
 public class AlunoStatusDTO {
     private Long alunoId;
     private String nomeAluno;
-    private String status;  // "CORRIGIDO" ou "PENDENTE"
+    private String status;
+    private String matricula;
+// "CORRIGIDO" ou "PENDENTE"
 }

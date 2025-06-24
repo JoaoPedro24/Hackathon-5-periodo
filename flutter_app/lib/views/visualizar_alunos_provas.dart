@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../auth/auth_helper.dart';
 import '../models/alunos_status_model.dart';
-import '../services/aluno_status_service.dart'; // ✅ Importa o service
+import '../services/aluno_status_service.dart';
+import '../widgets/modal_correcao.dart'; // ✅ Importa o service
 
 class VisualizarProvas extends StatefulWidget {
   final int provaId;
@@ -91,6 +92,13 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                               color: theme.primaryColorDark,
                             ),
                           ),
+                          if (aluno.matricula != null)
+                            Text(
+                              'Matrícula: ${aluno.matricula}',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: Colors.grey[700],
+                              ),
+                            ),
                           const SizedBox(height: 4),
                           Text(
                             'Status: ${aluno.status}',
@@ -101,6 +109,19 @@ class _VisualizarProvaScreenState extends State<VisualizarProvas> {
                               'Nota: ${aluno.nota!.toStringAsFixed(2)}',
                               style: theme.textTheme.bodyMedium,
                             ),
+                          const SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                builder:
+                                    (_) =>
+                                        ModalCorrecao(provaId: widget.provaId),
+                              );
+                            },
+                            child: const Text('Corrigir'),
+                          ),
                         ],
                       ),
                     ),
